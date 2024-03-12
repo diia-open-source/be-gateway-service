@@ -1,0 +1,56 @@
+[
+    {
+        "errorCode": 1012,
+        "template": {
+            "description": "Вказано неіснуючий ідентифікатор шаблону повідомлення"
+        }
+    },
+    {
+        "errorCode": 1013,
+        "template": {
+            "description": "Помилка валідації"
+        }
+    },
+    {
+        "errorCode": 1014,
+        "template": {
+            "description": "Невалідний РНОКПП."
+        }
+    },
+    {
+        "errorCode": 1015,
+        "template": {
+            "description": "Невалідний IBAN."
+        }
+    },
+    {
+        "errorCode": 1016,
+        "template": {
+            "description": "Термін дії створюваної картки вичерпано. Картку не додано."
+        }
+    },
+    {
+        "errorCode": 1017,
+        "template": {
+            "description": "Банком вже створено IBAN для вказаного РНОКПП. До одного РНОКПП може бути прив'язано тільки один діючий IBAN з вказаним типом послуги."
+        }
+    },
+    {
+        "errorCode": 1018,
+        "template": {
+            "description": "Запитуваний до видалення IBAN не знайдено."
+        }
+    },
+    {
+        "errorCode": 1019,
+        "template": {
+            "description": "Такий IBAN вже існує."
+        }
+    },
+    {
+        "errorCode": 1020,
+        "template": {
+            "description": "Невалідний номер картки."
+        }
+    }
+]

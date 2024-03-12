@@ -1,0 +1,18 @@
+[
+    {
+        "processCode": 117101004,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Service is unavailable",
+                "description": "Service is temporarily unavailable. Please try again later",
+                "mainButton": {
+                    "name": "OK",
+                    "action": "skip"
+                }
+            }
+        }
+    }
+]

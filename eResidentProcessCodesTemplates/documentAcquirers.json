@@ -1,0 +1,18 @@
+[
+    {
+        "processCode": 112141001,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Sorry, the request has not been fulfilled.",
+                "description": "Data on some of requested documents is temporarily unavailable. Please try again later.",
+                "mainButton": {
+                    "name": "Ok",
+                    "action": "skip"
+                }
+            }
+        }
+    }
+]

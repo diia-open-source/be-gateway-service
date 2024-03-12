@@ -1,0 +1,331 @@
+{
+    "categories": [
+        {
+            "code": "general",
+            "name": "General Questions",
+            "faq": [
+                {
+                    "question": "What is e-Residency of Ukraine?",
+                    "answer": "This is a special status that grants foreigners the right to register a business in the jurisdiction of Ukraine, earn income outside of Ukraine, and automatically pay taxes in Ukraine. By \"business,\" it refers to a small business in the form of entrepreneurial activity without creating a legal entity, without the right to hire workers from among the citizens or residents of Ukraine.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "For whom can e-Residency be of interest?",
+                    "answer": "For foreigners, mostly providing online services, with an annual income not exceeding 200,000 euros.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Is it necessary to visit Ukraine to obtain the status? ",
+                    "answer": "No, it is not required. The process of obtaining the status involves a one-time physical identification at the consular office of Ukraine in the country of residence and video verification for opening a bank account.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "What guarantees does Ukraine provide for the preservation of funds acquired through my entrepreneurial activities?",
+                    "answer": "According to subparagraph 40 of paragraph 14 of the resolution of the Board of the National Bank of Ukraine dated February 24, 2022, Kyiv No. 18 (as amended), Authorized Institutions are prohibited from conducting cross-border transfers of currency values from Ukraine/transferring funds to correspondent accounts of non-resident banks in hryvnias/foreign currency, opened in resident banks, including transfers made at the request of clients, except for cases of conducting operations to transfer funds in foreign currency by electronic residents (e-residents) to their accounts opened outside Ukraine, if such transfers are made at the expense of funds received from abroad from non-residents, after payment of taxes provided by Ukrainian legislation, and without using an electronic payment instrument. \nThus, at any time, you can withdraw your funds to your account abroad after the bank taxes your income, which will happen within 2 days.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am a citizen of country X (not on the list) and reside in country Y (on the list). Can I obtain the status?",
+                    "answer": "If your country of citizenship is not included in the List of countries whose citizens can become e-residents of Ukraine, you will not be able to obtain e-resident status.\n\nNote: Refer to the question \"Who can become an e-resident of Ukraine?\" for the list of countries.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am a citizen of country X (on the list), residing in country Y (not on the list). Can I obtain the status?",
+                    "answer": "Yes, the status can potentially be obtained, provided identification is conducted at the diplomatic institution of the country of citizenship.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am a citizen of country X (not on the list), residing in country X or Y (not on the list). When will my country be added to the list of eligible countries?",
+                    "answer": "We highly appreciate your interest in e-Residency of Ukraine program. Our team is working on expanding the list of countries. When your country will be added to the list of countries citizens of which can become e-residents of Ukraine, the information will be posted on the official website of the Ministry of Digital Transformation of Ukraine. Stay tuned for updates.\n\nNote: Refer to the question \"Who can become an e-resident of Ukraine?\" for the list of countries.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am already conducting business in my country. Can I become an e-resident of Ukraine?",
+                    "answer": "If your country is on the List of countries whose citizens can become e-residents of Ukraine, and you have submitted an application and successfully passed all checks, you can become an e-resident of Ukraine.\n\nNote: Refer to the question \"Who can become an e-resident of Ukraine?\" for the list of countries.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am an e-resident of Estonia. Can I obtain e-residency of Ukraine?",
+                    "answer": "Yes, you can, if your country of citizenship is on list of countries whose citizens can become e-residents of Ukraine. The possession of Estonian e-residency does not affect your ability to obtain Ukrainian e-residency in any way.\n\nNote: Refer to the question \"Who can become an e-resident of Ukraine?\" for the list of countries.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Is physical identification at the consulate mandatory?",
+                    "answer": "Physical identification is currently a mandatory requirement; however, we are working on enabling remote identification in the future.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I live quite far from the nearest consular office. Can I undergo identification remotely?",
+                    "answer": "For now, physical identification is conducted only at the consulate. However, we are working on implementing remote identification in the future. ",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Can I become one of the founders of a legal entity in Ukraine or another country while being an e-resident of Ukraine?",
+                    "answer": "Currently, the project does not provide e-residents with the ability to register a legal entity in Ukraine. However, a foreigner who does not have e-resident status can register a legal entity in Ukraine under the general provisions for foreigners, in accordance with the current legislation of Ukraine.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am a citizen of country X (on the {listOfCountriesLink} whose citizens can become e-residents of Ukraine), temporarily residing in Ukraine. Can I obtain e-resident status?",
+                    "answer": "Yes, you can, if your country of citizenship is on list of countries whose citizens can become e-residents of Ukraine. The possession of Estonian e-residency does not affect your ability to obtain Ukrainian e-residency in any way.\n\nNote: Refer to the question \"Who can become an e-resident of Ukraine?\" for the list of countries.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am a citizen of country X (on the {listOfCountriesLink}) and live temporarily in Ukraine. Can I obtain e-resident status?",
+                    "answer": "No.\n\nNote: Refer to the question \"Who can become an e-resident of Ukraine?\" for the list of countries.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "What advantages does e-Residency of Ukraine offer to foreigners?",
+                    "answer": "The status of e-resident of Ukraine provides the right to conduct business with the following advantages:\n• enhancing client trust: operating within the legal framework of a European country boosts trust among your clients\n• favorable tax system: you only pay 5% on income up to approximately 200,000 euros, and any amount exceeding this is taxed at a 15% rate\n• online business registration\n• online opening of bank accounts\n• automatic tax payment\n• no tax reports",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I hesitate whether to become an e-resident of Ukraine or Estonia. What are the main advantages of your service?",
+                    "answer": "The status of e-resident of Ukraine provides the right to conduct business with the following advantages:\n● Favorable tax system: you only pay 5% on income up to approximately 200,000 euros, and any amount exceeding this is taxed at a 15% rate.\n● To become a Ukrainian e-resident, you don't need to come to Ukraine. You can get this status in the country of your residence.\n● Obtaining a Ukrainian e-residency is free. No monthly payments for accounting software and accountant services. Only the payment of taxes and a nominal fee for opening and maintaining accounts in the bank.\n● Online business registration and opening of bank accounts.\n● Automatic tax payment and no tax reports.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Do you provide services related to finding clients, orders, etc.?",
+                    "answer": "Currently, such services are not provided, but we are working on implementing them in the future.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Is e-resident status sufficient to conduct business in Ukraine?",
+                    "answer": "No, the status only grants foreigners the right to register a business in Ukraine under favorable conditions. It is necessary to register as an e-resident entrepreneur and open at least one bank account for business purposes to engage in entrepreneurial activities after obtaining the status.\nObtaining the status, business registration, and opening an account are all accessible through the mobile application and web interface.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Does e-resident status entail a simplified procedure for crossing the border of Ukraine?",
+                    "answer": "Ukrainian e-resident status does not provide any advantages for foreigners regarding border crossing.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Who can become the e-resident of Ukraine?",
+                    "answer": "At this stage, citizens of the following countries, who have reached the age of 18, are not subject to international arrest warrants and have no legal issues:\n• Pakistan\n• Thailand\n• India\n• Slovenia\n\nThe list of countries will expand. Stay tuned for updates on our website.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "How to apply?",
+                    "answer": "1. Fill in the application form and attach a scanned copy of your travel document.\n2. You can track your application status through your personal tracking account. You will receive credentials for logging in via email.\n3. Wait until your application is fully processed. You may be asked to provide additional information related to your application.\n4. Book a visit to a consulate of Ukraine through a link, which will be sent to your email. Make sure that the chosen consulate is in the country you can enter on a legal basis.\n5. Come to the chosen consulate at the scheduled time and bring the travel document you have previously provided in your application. A consulate official will verify your identity and take a photo of you. You will also need to download and install a special app for onboarding. If verification is successful, you will receive an e-resident status and e-signature.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "For how long is the status valid?",
+                    "answer": "Your status is valid for 12 months since the issuance of an e-signature. To renew your status, you will need to visit the consulate of Ukraine again.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am a stateless person. Can I obtain e-resident status?",
+                    "answer": "Unfortunately, no.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "What documents are required to process the service?",
+                    "answer": "Only a passport for international travel is required.",
+                    "subFeatures": [],
+                    "parameters": []
+                }
+            ]
+        },
+        {
+            "code": "yourBusiness",
+            "name": "Your Business",
+            "faq": [
+                {
+                    "question": "What is the legal form of your business?",
+                    "answer": "You can establish your business as a sole proprietor (private entrepreneur) or FOP in Ukrainian. As a PE you own 100% of your business, keep all profits and are liable for all financial obligations. ",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Can you register an LLC?",
+                    "answer": "For now, e-residents can’t register LLCs, they can only become a private entrepreneur, but we will be working to give them this opportunity.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Can I employ other people?",
+                    "answer": "No, at this stage you are not allowed to employ other people to work for you. ",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "How to start your business and open a bank account?",
+                    "answer": "After obtaining your status, you can log in your personal e-resident account and submit an application for registering as a sole proprietor and opening a bank account. It is an all-in-one service. ",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "What types of economic activities are allowed for e-residents?",
+                    "answer": "You can engage in any type of activities permitted by law for Ukrainian individual entrepreneurs under the 3rd group of the unified tax (excluding those requiring licensing and additional permits).\nWhich activities are prohibited by the current legislation for taxpayers of group 3?\n• activities related to the organization, conduct of gambling games, lotteries, bets, etc. (bookmaker bets, totalizer bets)\n• foreign currency exchange\n• activities related to the production and sale of excise goods\n• activities related to the extraction, production and sale of precious metals and stones, as well as minerals\n• activities in the field of financial intermediation and management of enterprises\n• activities in the provision of mail services and services in the field of telephony\n• activities related to the sale of works of art and antiques, activities related to the organization of trades (auctions) of works of art, collectibles, or antiques\n• activities related to the organization and holding of touring events\n\nIf you have doubts about the possibility of carrying out certain types of activities, we advise you to read subsection 291.5.1 of paragraph 291.5 of article 291 of the Tax Code of Ukraine or to contact our support service for clarification.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "What is the annual income limit for e-residents entrepreneurs?",
+                    "answer": "The maximum annual income must not exceed 1167 minimum wages as of January 1 of the reporting year (approximately 200,000 euros as for 2023). Otherwise a higher tax rate applies 15%.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "How much tax do I have to pay?",
+                    "answer": "A rate of 5% is applied to each incoming transaction to your bank account, provided that the annual limit is not exceeded. If you exceed the limit, you pay 15% of the amount that exceeds the limit. Limits are set annually. As of 2023 year, the limit is equivalent to approximately 200,000 euros. The bank pays your taxes for you.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "What types of activities can I not carry out and why?",
+                    "answer": "When submitting an application for registration as an entrepreneur, we ask you to mark that you undertake not to carry out certain types of activities. Why is that so? Because they are prohibited by the current legislation for taxpayers of group 3. Therefore, by ticking, you undertake not to do the following:\n• Activities related to the organization, conduct of gambling games, lotteries, bets, etc. (bookmaker bets, totalizer bets)\n• Foreign currency exchange\n• Activities related to the production and sale of excise goods\n• Activities related to the extraction, production and sale of precious metals and stones, as well as minerals\n• Activities in the field of financial intermediation and management of enterprises\n• Activities in the provision of mail services and services in the field of telephony\n• Activities related to the sale of works of art and antiques, activities related to the organization of trades (auctions) of works of art, collectibles, or antiques\n• Activities related to the organization and holding of touring events\n\nIf you have doubts about the possibility of carrying out certain types of activities, we advise you to read subsection 291.5.1 of paragraph 291.5 of article 291 of the Tax Code of Ukraine or to contact our support service for clarification.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Do I need to file tax returns?",
+                    "answer": "No, the bank where you have opened a bank account will report on your behalf. It serves as your tax agent.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am an e-resident of Ukraine and pay taxes in Ukraine. Do I need to pay additional taxes in my country?",
+                    "answer": "We recommend you familiarize yourself with the tax legislation of your country and take into account its tax specifics, as we do not influence issues that fall within the jurisdiction of other states.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Who is responsible for the violation of the terms of my contract with my clients (counterparties)?",
+                    "answer": "Responsibility for a breach of contract is typically stipulated in the terms of the specific agreement entered into by you and the counterparty.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "How can I withdraw the earned money?",
+                    "answer": "After paying taxes, you can transfer funds to your personal account opened in your country of residence. Such an account is specified when applying to open an account in a bank in Ukraine.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Is the e-residency service free of charge? What are the conditions for opening a bank account?",
+                    "answer": "Yes, currently, this service is free. However, when opening an account with a commercial bank, a separate fee may be charged for the opening or maintenance of such an account. You can find more details on the tariff plans at the following link: {tariffPlanLink}\nAlthough obtaining a Ukrainian e-residency is free, a separate fee may be charged for the opening or maintenance of a bank account. You can find more details on the tariff plans at the following link: {tariffPlanLink}",
+                    "subFeatures": [],
+                    "parameters": [
+                        {
+                            "type": "link",
+                            "data": {
+                                "name": "tariffPlanLink",
+                                "alt": "https://en.privatbank.ua/handbook/e-resident",
+                                "resource": "https://en.privatbank.ua/handbook/e-resident"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "question": "What documents are required for registration in the program and obtaining the e-resident status in Ukraine?",
+                    "answer": "To obtain e-resident status, simply submit an application for e-resident status online and upload your passport for international travel.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "How does the opening of a bank account take place?",
+                    "answer": "After obtaining e-resident status and a Qualified Electronic Signature, you need to submit an online application to register as an entrepreneur and open an account with the bank of your choice from the provided list.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "What are the limitations on conducting business as an e-resident?",
+                    "answer": "Currently, there are such restrictions:\n• Restrictions on the annual limit of funds circulation. The limit is set annually. As of January 2, 2024, it is equivalent to 197,513 euros and may change depending on fluctuations in the hryvnia to euro exchange rate. In case of exceeding the limit, you will pay 15% instead of 5% of the amount exceeding the limit.\n• You can open accounts only with one bank in Ukraine. The number of accounts is not limited, and the types of currencies are determined by the bank.\n• It is prohibited to employ hired personnel.\n• It is prohibited to receive income from sources originating in Ukraine (enter into contracts with Ukrainian individuals or legal entities to receive income).\n• Stay in Ukraine for more than 180 days.\n• Restrictions on countries: countries recognized as an aggressor state and/or an occupying state towards Ukraine; gray and black lists of FATF; countries identified by the European Commission as having weak regimes for preventing and combating the legalization (money laundering) of proceeds from crime, financing of terrorism, and financing the spread of weapons of mass destruction.\n• Provision of services to Ukrainian citizens, tax residents of Ukraine.\n• Foreigners who are entitled to permanent residency in Ukraine or those who are already tax residents of Ukraine.\nRestrictions on types of activities:\n• Activities related to the organization, conduct of gambling games, lotteries, bets, etc. (bookmaker bets, totalizer bets)\n• Foreign currency exchange\n• Activities related to the extraction, production and sale of precious metals and stones, as well as minerals\n• Activities in the field of financial intermediation and management of enterprises\n• Activities in the provision of mail services and services in the field of telephony\n• Activities related to the sale of works of art and antiques, activities related to the organization of trades (auctions) of works of art, collectibles, or antiques\n• Activities related to the organization and holding of touring events\n\nIf you have doubts about the possibility of carrying out certain types of activities, we advise you to read subsection 291.5.1 of paragraph 291.5 of article 291 of the Tax Code of Ukraine or to contact our support service for clarification.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Can I invest the money I earned?",
+                    "answer": "Yes, you can use the funds at your discretion within the framework of applicable legislation after paying taxes.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Can I spend the money I earn in Ukraine, my country, or other countries?",
+                    "answer": "You can spend money in any country.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I have an account in USD/EUR. Can I transfer funds to my account in another currency? How can I do that?",
+                    "answer": "The bank transfers funds only in the currency in which the account is opened, i.e. USD/EUR.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Can I enter into contracts with Ukrainian companies?",
+                    "answer": "If the terms of the contract stipulate that you will provide services and receive income from sources originating in Ukraine, then entering into such contracts is not permissible, as the Ukrainian legislation prohibits e-residents from receiving income from Ukraine.\nHowever, you can conclude contracts that provide for you as an e-resident to receive services on the territory of Ukraine.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am already registered as a private entrepreneur in Ukraine. Can I obtain e-resident status?",
+                    "answer": "No, it is not possible. If you are registered as a private entrepreneur in Ukraine, you are a tax resident of Ukraine, and therefore, the service is not available to you.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "I am the ultimate beneficiary of a legal entity in Ukraine. Can I obtain e-resident status?",
+                    "answer": "According to the Ukrainian legislation, the following cannot be electronic residents:\n• foreigners who have the right to permanent residence in Ukraine or are tax residents of Ukraine;\n• persons who receive income with a source of origin from Ukraine for goods, works, and services, except for passive income.\n\nTherefore, if you, as the ultimate beneficiary of a legal entity, have a center of vital interests in Ukraine and are a tax resident of Ukraine, you cannot obtain the e-resident status.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Which countries' companies and clients can I cooperate with?",
+                    "answer": "You can cooperate with all countries except Russia and Belarus. Also you cannot receive income with a source of origin in Ukraine.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "How can I manage my bank account?",
+                    "answer": "You can do this through the relevant online tools of the bank where the accounts are opened.",
+                    "subFeatures": [],
+                    "parameters": []
+                }
+            ]
+        },
+        {
+            "code": "otherQuestions",
+            "name": "Other Questions",
+            "faq": [
+                {
+                    "question": "Can I come to Ukraine or receive citizenship with this status?",
+                    "answer": "E-residency is a digital presence of a foreign citizen in Ukraine.\n\nThe status does not provide benefits for staying on the territory of Ukraine or crossing the border, obtaining a residence permit, acquiring citizenship, recognition as a refugee or a person in need of additional protection.",
+                    "subFeatures": [],
+                    "parameters": []
+                },
+                {
+                    "question": "Can I open a bank account without becoming a private entrepreneur?",
+                    "answer": "No. You can open a bank account for business purposes and one for personal use only after registering as PE.",
+                    "subFeatures": [],
+                    "parameters": []
+                }
+            ]
+        }
+    ]
+}

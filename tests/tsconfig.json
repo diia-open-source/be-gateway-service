@@ -1,0 +1,22 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": "../",
+        "paths": {
+            "@services/*": ["src/services/*"],
+            "@interfaces/*": ["src/interfaces/*"],
+            "@models/*": ["src/models/*"],
+            "@dataMappers/*": ["src/dataMappers/*"],
+            "@utils/*": ["src/utils/*"],
+            "@xmlMappings/*": ["src/xmlMappings/*"],
+            "@actions/*": ["src/actions/*"],
+            "@src/*": ["src/*"],
+            "@mocks/*": ["tests/mocks/*"],
+            "@validation/*": ["src/validation/*"],
+            "@tests/*": ["tests/*"]
+        },
+        "noEmit": true,
+        "strict": true
+    },
+    "include": ["./**/*"]
+}

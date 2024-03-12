@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= data.title %></title>
+        <meta charset="utf-8" />
+        <link href="https://fonts.googleapis.com/css2?family=Catamaran&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet" />
+        <style>
+            /* Button */
+            .m-btn {
+                border-radius: var(--border-radius);
+                font-weight: 600;
+                display: inline-block;
+                padding: 6px 16px;
+                font-size: var(--font-size-small);
+                outline: 0;
+                line-height: 1;
+                text-align: center;
+                white-space: nowrap;
+                border: 2px solid var(--primary-color);
+                background-color: transparent;
+                transition: background-color 0.2s;
+                user-select: none;
+                cursor: pointer;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            }
+            .m-btn.primary {
+                background-color: var(--primary-color);
+                color: var(--primary-color-invert);
+            }
+            .m-btn.thin-border {
+                border-width: 1px;
+            }
+            .m-btn.small {
+                padding: 5px 12px;
+            }
+            .m-btn:hover {
+                background-color: var(--primary-color);
+                color: var(--primary-color-invert);
+            }
+
+            .server-title {
+                font-size: var(--font-size-small);
+                font-family: var(--font-mono);
+                color: var(--primary-color);
+                font-weight: bold;
+                vertical-align: middle;
+                margin: 12px 0 4px 0;
+            }
+
+            /* Form Inputs */
+            input,
+            button {
+                color: var(--fg);
+                outline: none;
+                background-color: var(--input-bg);
+                border: 1px solid var(--border-color);
+                border-radius: var(--border-radius);
+            }
+            button {
+                font-family: var(--font-regular);
+            }
+            input[type='text'] {
+                color: var(--fg);
+                font-family: var(--font-mono);
+                font-weight: 400;
+                font-size: var(--font-size-small);
+                transition: border 0.2s;
+                padding: 6px 5px;
+            }
+            input[type='text']::placeholder {
+                color: var(--placeholder-color);
+                opacity: 1;
+            }
+            input[type='text']:focus,
+            input[type='text']:active {
+                border: 1px solid var(--primary-color);
+            }
+
+            /* Service selector */
+            .selector-container {
+                border-radius: var(--border-radius);
+                font-weight: 600;
+                display: inline-block;
+                padding: 8px 16px;
+                font-size: var(--font-size-small);
+                outline: 0;
+                line-height: 1;
+                text-align: center;
+                border: 2px solid var(--primary-color);
+                background-color: var(--bg);
+                transition: background-color 0.2s;
+                user-select: none;
+                color: var(--primary-color);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+                left: 0;
+            }
+            .selector-container option {
+                padding: 2px 10px;
+            }
+
+            /* Modal window */
+            *,
+            *:before,
+            *:after {
+                box-sizing: border-box;
+            }
+            .dialog-box-overlay {
+                background-color: var(--overlay-bg);
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                overflow: hidden;
+                z-index: var(--dialog-z-index);
+            }
+            .dialog-box {
+                position: fixed;
+                top: 100px;
+                left: 50%;
+                transform: translate(-50%, 0%);
+                display: flex;
+                flex-direction: column;
+                width: 75vw;
+                background-color: var(--bg2);
+                color: var(--fg2);
+                border-radius: 4px;
+                max-height: 750px;
+                overflow: hidden;
+                border: 1px solid var(--border-color);
+                box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+            }
+            .dialog-box-header {
+                position: sticky;
+                top: 0;
+                align-self: stretch;
+                display: flex;
+                align-items: center;
+                padding: 0px 16px;
+                min-height: 60px;
+                max-height: 60px;
+                border-bottom: 1px solid var(--light-border-color);
+                overflow: hidden;
+            }
+            .dialog-box-header button {
+                font-size: 1.5rem;
+                font-weight: 700;
+                line-height: 1;
+                color: var(--fg);
+                border: none;
+                outline: none;
+                background-color: transparent;
+                cursor: pointer;
+                border: 1px solid transparent;
+                border-radius: 50%;
+                margin-right: -8px;
+            }
+            .dialog-box-header button:hover {
+                border-color: var(--primary-color);
+            }
+            .dialog-box-content {
+                padding: 16px;
+                display: block;
+                overflow: auto;
+                height: 100%;
+            }
+            .dialog-box-title {
+                flex-grow: 1;
+                font-size: 24px;
+            }
+
+            /* Toggler */
+            input[type='checkbox']:focus {
+                outline: 0;
+            }
+            /* Toggle Body */
+            input[type='checkbox'] {
+                appearance: none;
+                display: inline-block;
+                background-color: var(--light-bg);
+                border: 1px solid var(--light-bg);
+                border-radius: 12px;
+                cursor: pointer;
+                height: 24px;
+                position: relative;
+                transition: border 0.25s 0.15s, box-shadow 0.25s 0.3s, padding 0.25s;
+                min-width: 48px;
+                width: 48px;
+                vertical-align: top;
+            }
+            /* Toggle Thumb */
+            input[type='checkbox']:after {
+                position: absolute;
+                background-color: var(--bg);
+                border: 1px solid var(--light-bg);
+                border-radius: 12px;
+                content: '';
+                top: 0px;
+                left: 0px;
+                right: 22px;
+                display: block;
+                height: 22px;
+                transition: border 0.25s 0.15s, left 0.25s 0.1s, right 0.15s 0.175s;
+            }
+            /* Toggle Body - Checked */
+            input[type='checkbox']:checked {
+                box-shadow: inset 0 0 0 17px var(--green);
+                border-color: var(--green);
+            }
+            /* Toggle Thumb - Checked*/
+            input[type='checkbox']:checked:after {
+                border: 1px solid var(--green);
+                left: 22px;
+                right: 1px;
+            }
+
+            /* Success auth snackbar */
+            #token-snackbar {
+                visibility: hidden;
+                min-width: 250px;
+                margin-left: -125px;
+                background-color: var(--primary-color);
+                border: 1px solid var(--primary-color-invert);
+                border-radius: 12px;
+                color: var(--primary-color-invert);
+                text-align: center;
+                padding: 16px;
+                position: fixed;
+                z-index: 1001; /* Above var(--dialog-z-index) */
+                left: 50%;
+                bottom: 30px;
+            }
+            #token-snackbar.show {
+                visibility: visible;
+                animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            }
+            @keyframes fadein {
+                from {
+                    bottom: 0;
+                    opacity: 0;
+                }
+                to {
+                    bottom: 30px;
+                    opacity: 1;
+                }
+            }
+            @keyframes fadeout {
+                from {
+                    bottom: 30px;
+                    opacity: 1;
+                }
+                to {
+                    bottom: 0;
+                    opacity: 0;
+                }
+            }
+        </style>
+        <script
+            src="https://unpkg.com/rapidoc@9.3.3/dist/rapidoc-min.js"
+            integrity="sha384-ZYtDt37eQMO8/M1YdRP3IMz6pZEFp5EvWSXA2tSC/G2aZwFUKc59srHeZLNV+1JG"
+            crossorigin="anonymous"
+        ></script>
+
+        <script>
+            let rapiDoc
+            let tokensEl
+
+            const getRapiDoc = () => document.getElementById('the-doc')
+            const getTokensRapiDoc = () => document.getElementById('tokens-el')
+            const setAttributes = (element, attributes) =>
+                Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value))
+
+            const themeLocalStorageKey = 'diia-docs-theme'
+            const serversLocalStorageKey = 'diia-docs-servers'
+            const activeServerLocalStorageKey = 'diia-docs-active-server'
+
+            const data = JSON.parse('<%-JSON.stringify(data)%>')
+            const baseUrl = window.location.origin
+            const rapiDocAttributes = {
+                'server-url': baseUrl,
+                'spec-url': `${baseUrl}/${data.specPathPrefix}/${data.service}`,
+                'schema-expand-level': '15',
+                'schema-style': 'tree',
+                'render-style': 'view',
+                layout: 'row',
+                'font-size': 'large',
+                'regular-font': 'Catamaran',
+                'mono-font': 'Source Code Pro',
+                'response-area-height': '400px',
+                'allow-advanced-search': 'true',
+                'allow-server-selection': 'true',
+                'allow-spec-url-load': 'false',
+                'allow-spec-file-load': 'false',
+                'allow-spec-file-download': 'true',
+                'show-info': 'true',
+                'persist-auth': 'true',
+            }
+
+            document.addEventListener('DOMContentLoaded', async (event) => {
+                rapiDoc = getRapiDoc()
+                tokensEl = getTokensRapiDoc()
+
+                setAttributes(rapiDoc, rapiDocAttributes)
+
+                rapiDoc.addEventListener('spec-loaded', (e) => setServerFromStorage(rapiDoc))
+                tokensEl.addEventListener('spec-loaded', (e) => setServerFromStorage(tokensEl))
+
+                rapiDoc.addEventListener('api-server-change', (e) => {
+                    const serverUrl = e.detail.selectedServer.url
+                    localStorage.setItem(activeServerLocalStorageKey, serverUrl)
+                    if (tokensEl.selectedServer && tokensEl.selectedServer.url !== serverUrl) {
+                        tokensEl.setApiServer(serverUrl)
+                    }
+                })
+
+                setTheme(localStorage.getItem(themeLocalStorageKey))
+                setServicesInSelector()
+                setCustomServerList()
+
+                const modals = ['server-editor', 'tokens']
+                modals.forEach((modal) => {
+                    setModalEvents(`${modal}-modal`, `${modal}-btn`, `${modal}-btn-close`)
+                })
+                window.onclick = (event) => {
+                    if (modals.map((modal) => `${modal}-modal`).includes(event.target.id)) {
+                        const modal = document.getElementById(event.target.id)
+                        modal.style.display = 'none'
+                    }
+                }
+
+                setAttributes(tokensEl, {
+                    'spec-url': `${baseUrl}/${data.specPathPrefix}/auth`,
+                    'match-paths': '(test\/|(acquirer|partner)\/{token}|(auth|portal)\/token$)',
+                    'match-type': 'regex',
+                    'schema-style': 'tree',
+                    layout: 'row',
+                    'font-size': 'large',
+                    'sort-endpoints-by': 'path',
+                    'regular-font': 'Catamaran',
+                    'mono-font': 'Source Code Pro',
+                })
+
+                tokensEl.addEventListener('after-try', (e) => {
+                    const { responseBody } = e.detail
+                    if (responseBody?.token) {
+                        const authSection = rapiDoc.shadowRoot.getElementById('security-scheme-http-bearer')
+                        const apiTokenInput = authSection.querySelector('input')
+
+                        apiTokenInput.value = responseBody.token
+
+                        const authButtons = authSection.querySelectorAll('button')
+
+                        authButtons[authButtons.length - 1].click()
+
+                        showSnackbar()
+                    }
+                })
+            })
+
+            function setModalEvents(modalName, btnName, closeBtnName) {
+                const modal = document.getElementById(modalName)
+                const btn = document.getElementById(btnName)
+                const closeBtn = document.getElementById(closeBtnName)
+
+                btn.onclick = () => {
+                    modal.style.display = 'block'
+                }
+
+                closeBtn.onclick = () => {
+                    modal.style.display = 'none'
+                }
+            }
+
+            function setServicesInSelector() {
+                const serviceSelector = document.getElementById('services')
+                Object.entries(data.services).forEach(([key, value]) => {
+                    const option = document.createElement('option')
+                    option.value = key
+                    option.textContent = value
+                    if (key === data.service) {
+                        option.setAttribute('selected', true)
+                    }
+
+                    serviceSelector.appendChild(option)
+                })
+            }
+
+            function changeService(selectObject) {
+                const server = selectObject.value
+
+                setAttributes(rapiDoc, {
+                    'spec-url': `${baseUrl}/${data.specPathPrefix}/${server}`,
+                })
+
+                const urlPath = `${baseUrl}/${data.docPathPrefix}/${server}`
+                window.history.pushState({ path: urlPath }, '', urlPath)
+                document.querySelector('title').innerText = data.services[server]
+            }
+
+            function toggleTheme() {
+                const theme = localStorage.getItem(themeLocalStorageKey)
+
+                theme === 'light' ? setTheme('dark') : setTheme('light')
+            }
+
+            function setTheme(theme) {
+                const resetTheme = {
+                    'show-header': '',
+                    'bg-color': '',
+                    'text-color': '',
+                    'nav-bg-color': '',
+                    'nav-text-color': '',
+                    'nav-hover-bg-color': '',
+                    'nav-hover-text-color': '',
+                    'nav-accent-color': '',
+                    'primary-color': '',
+                }
+
+                setAttributes(rapiDoc, resetTheme)
+                setAttributes(tokensEl, resetTheme)
+
+                if (theme === 'light') {
+                    const lightTheme = {
+                        theme: 'light',
+                        'primary-color': '#1a54bc',
+                        'bg-color': '#fefefe',
+                        'text-color': '#282828',
+                        'header-color': '#185bc3',
+                    }
+                    setAttributes(rapiDoc, lightTheme)
+                    setAttributes(tokensEl, lightTheme)
+                    localStorage.setItem(themeLocalStorageKey, 'light')
+                } else {
+                    const darkTheme = {
+                        theme: 'dark',
+                        'primary-color': '#FFD369',
+                        'bg-color': '#222831',
+                        'text-color': '#EEEEEE',
+                        'header-color': '#393E46',
+                    }
+                    setAttributes(rapiDoc, darkTheme)
+                    setAttributes(tokensEl, darkTheme)
+                    localStorage.setItem(themeLocalStorageKey, 'dark')
+
+                    const slider = document.getElementById('slider')
+                    slider.checked = true
+                }
+            }
+
+            function setCustomServerList() {
+                const servers = JSON.parse(localStorage.getItem(serversLocalStorageKey)) || []
+                const list = document.getElementById('server-editor-list')
+                list.innerHTML = ''
+
+                const urls = servers.map((server) => server.url)
+
+                urls.forEach((url) => {
+                    const listItem = document.createElement('li')
+                    listItem.className = 'server-title'
+
+                    const deleteButton = document.createElement('button')
+                    deleteButton.innerText = 'DELETE'
+                    deleteButton.className = 'm-btn thin-border'
+                    deleteButton.style.marginLeft = '25px'
+
+                    deleteButton.addEventListener('click', (e) => {
+                        const server = servers.find((server) => server.url === url)
+
+                        updateServersListInSpecs(server, 'delete')
+                        localStorage.setItem(serversLocalStorageKey, JSON.stringify(servers.filter((server) => server.url !== url)))
+                        list.removeChild(listItem)
+                    })
+
+                    listItem.appendChild(document.createTextNode(url))
+                    listItem.appendChild(deleteButton)
+                    list.appendChild(listItem)
+                })
+            }
+
+            function setServerFromStorage(spec) {
+                const activeServer = localStorage.getItem(activeServerLocalStorageKey)
+                spec.resolvedSpec.servers.push(...JSON.parse(localStorage.getItem(serversLocalStorageKey)))
+                if (activeServer) {
+                    spec.setApiServer(activeServer)
+                }
+
+                spec.requestUpdate()
+            }
+
+            function updateServersListInSpecs(server, op) {
+                if (op === 'add') {
+                    rapiDoc.resolvedSpec.servers.push(server)
+                    tokensEl.resolvedSpec.servers.push(server)
+                } else {
+                    const docServerIndex = rapiDoc.resolvedSpec.servers.findIndex((s) => s.url === server.url)
+                    const tokensServerIndex = tokensEl.resolvedSpec.servers.findIndex((s) => s.url === server.url)
+                    rapiDoc.resolvedSpec.servers.splice(docServerIndex, 1)
+                    tokensEl.resolvedSpec.servers.splice(tokensServerIndex, 1)
+                }
+
+                rapiDoc.requestUpdate()
+                tokensEl.requestUpdate()
+            }
+
+            function storeServer(serverName) {
+                const servers = JSON.parse(localStorage.getItem(serversLocalStorageKey)) || []
+                const input = document.getElementById('server-editor-url')
+                const url = input.value
+                input.value = ''
+
+                try {
+                    new URL(url)
+                } catch (err) {
+                    return
+                }
+
+                if (servers.map((server) => server.url).includes(url)) {
+                    return
+                }
+                const server = { url, computedUrl: url }
+                servers.push(server)
+                localStorage.setItem(serversLocalStorageKey, JSON.stringify(servers))
+
+                updateServersListInSpecs(server, 'add')
+                setCustomServerList()
+            }
+
+            function showSnackbar() {
+                const snackbar = document.getElementById('token-snackbar')
+
+                snackbar.className = 'show'
+                setTimeout(() => {
+                    snackbar.className = snackbar.className.replace('show', '')
+                }, 3000)
+            }
+        </script>
+    </head>
+
+    <body>
+        <rapi-doc id="the-doc">
+            <div slot="header" style="display: flex; justify-content: right; flex-wrap: wrap; flex: 1">
+                <label id="switch" class="switch">
+                    <input style="cursor: pointer; padding-right: 4px" type="checkbox" onchange="toggleTheme()" id="slider" />
+                </label>
+            </div>
+
+            <div slot="logo" style="display: flex; justify-content: right; flex-wrap: wrap; flex: 1; padding: 0px 6px">
+                <select onchange="changeService(this)" id="services" class="selector-container"></select>
+                <button class="m-btn primary" style="margin-left: 10px" id="tokens-btn">Get token</button>
+            </div>
+
+            <div slot="servers">
+                <span style="color: var(--primary-color); cursor: pointer" id="server-editor-btn"> Edit servers </span>
+            </div>
+
+            <div class="dialog-box-overlay" id="tokens-modal" style="display: none">
+                <div class="dialog-box">
+                    <header class="dialog-box-header">
+                        <span class="dialog-box-title">Tokens</span>
+                        <button type="button" id="tokens-btn-close">&times;</button>
+                    </header>
+                    <div class="dialog-box-content">
+                        <rapi-doc-mini id="tokens-el"> </rapi-doc-mini>
+                    </div>
+                </div>
+            </div>
+
+            <div id="token-snackbar">Token successfully set in headers</div>
+
+            <div class="dialog-box-overlay" id="server-editor-modal" style="display: none">
+                <div class="dialog-box">
+                    <header class="dialog-box-header">
+                        <span class="dialog-box-title">Custom servers</span>
+                        <button type="button" id="server-editor-btn-close">&times;</button>
+                    </header>
+                    <div class="dialog-box-content">
+                        <ul id="server-editor-list"></ul>
+                        <div style="max-height: 28px">
+                            <input
+                                type="text"
+                                style="width: 280px; margin-right: 25px"
+                                value=""
+                                id="server-editor-url"
+                                placeholder="https://server.com:8080"
+                                spellcheck="false"
+                            />
+                            <button class="m-btn thin-border" part="btn btn-outline" onclick="storeServer()">ADD</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </rapi-doc>
+    </body>
+</html>
