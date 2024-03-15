@@ -26,7 +26,7 @@ This repository contains the service which provides HTTP gateway functionality a
 Example:
 
 ```
-git clone https://github.com/diia-open-source/gateway-service.git
+git clone https://github.com/diia-open-source/be-gateway-service.git gateway-service
 ```
 
 ---
