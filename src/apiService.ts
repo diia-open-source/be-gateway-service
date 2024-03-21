@@ -162,40 +162,22 @@ export default (
                 }
 
                 if (data?.$fileType) {
-                    switch (data.$fileType) {
-                        case FileType.PNG: {
-                            res.setHeader('Content-disposition', `${data.disposition}; filename=${data.filename}`)
-                            res.setHeader('Content-Type', 'image/png')
+                    const fileTypesObject = {
+                        [FileType.PNG]: 'image/png',
+                        [FileType.JPEG]: 'image/jpeg',
+                        [FileType.JSON]: 'application/json',
+                        [FileType.PDF]: 'application/pdf',
+                    }
 
-                            trackingUtils.trackSuccess(defaultMetricLabels, requestStart, span)
+                    const contentType = fileTypesObject[data.$fileType]
 
-                            return res.end(Buffer.from(<string>data.content, 'base64'))
-                        }
-                        case FileType.JPEG: {
-                            res.setHeader('Content-disposition', `${data.disposition}; filename=${data.filename}`)
-                            res.setHeader('Content-Type', 'image/jpeg')
+                    if(contentType) {
+                        res.setHeader('Content-disposition', `${data.disposition}; filename=${data.filename}`)
+                        res.setHeader('Content-Type', contentType)
 
-                            trackingUtils.trackSuccess(defaultMetricLabels, requestStart, span)
+                        trackingUtils.trackSuccess(defaultMetricLabels, requestStart, span)
 
-                            return res.end(Buffer.from(<string>data.content, 'base64'))
-                        }
-                        case FileType.JSON: {
-                            res.setHeader('Content-disposition', `${data.disposition}; filename=${data.filename}`)
-                            res.setHeader('Content-Type', 'application/json')
-
-                            trackingUtils.trackSuccess(defaultMetricLabels, requestStart, span)
-
-                            return res.end(Buffer.from(<string>data.content, 'base64'))
-                        }
-                        case FileType.PDF: {
-                            res.setHeader('Content-disposition', `${data.disposition}; filename=${data.filename}`)
-                            res.setHeader('Content-Type', 'application/pdf')
-
-                            trackingUtils.trackSuccess(defaultMetricLabels, requestStart, span)
-
-                            return res.end(Buffer.from(<string>data.content, 'base64'))
-                        }
-                        default:
+                        return res.end(Buffer.from(<string>data.content, 'base64'))
                     }
                 }
 
@@ -227,11 +209,7 @@ export default (
                     try {
                         const template = await errorTemplateService.fetchErrorTemplateByCode(errorCode)
                         if (template) {
-                            const {
-                                template: { description },
-                            } = template
-
-                            error.description = description
+                            error.description = template.template.description
                         }
 
                         data.error = error
@@ -287,11 +265,7 @@ export default (
 
                             const template = await errorTemplateService.fetchErrorTemplateByCode(processCode)
                             if (template) {
-                                const {
-                                    template: { description },
-                                } = template
-
-                                err.description = description
+                                err.description = template.template.description
                             }
                         } else {
                             const processData = processDataService.getProcessData(
