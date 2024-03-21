@@ -14,21 +14,29 @@ import { ErrorTemplate, ErrorTemplateModel } from '@interfaces/models/errorTempl
 import { ErrorTemplateListResult, ErrorTemplateResult, GetErrorTemplatesListOptions } from '@interfaces/services/errorTemplate'
 
 export default class ErrorTemplateService {
-    private errorTemplateStoreKey = 'error-templates'
+    private readonly errorTemplateStoreKey = 'error-templates'
+    private errorsCount: number = 0
+
 
     constructor(
         private readonly errorTemplateDataMapper: ErrorTemplateDataMapper,
 
         private readonly store: StoreService,
-    ) {}
+    ) {
+        this.initialize()
+    }
+
+    private async initialize(): Promise<void> {
+        this.errorsCount = await errorTemplateModel.countDocuments()
+    }
 
     async getErrorTemplatesList({ skip, limit }: GetErrorTemplatesListOptions): Promise<ErrorTemplateListResult> {
-        const [total, errorTemplates]: [number, ErrorTemplateModel[]] = await Promise.all([
-            errorTemplateModel.countDocuments(),
-            errorTemplateModel.find().skip(skip).limit(limit),
-        ])
+        const errorTemplates: ErrorTemplateModel[] = await errorTemplateModel.find().skip(skip).limit(limit);
 
-        return { total, errorTemplates: errorTemplates.map((errorTemplate) => this.errorTemplateDataMapper.toEntity(errorTemplate)) }
+        return {
+            total: this.errorsCount,
+            errorTemplates: errorTemplates.map((errorTemplate) => this.errorTemplateDataMapper.toEntity(errorTemplate))
+        }
     }
 
     async createErrorTemplate(errorTemplate: ErrorTemplate): Promise<ErrorTemplateResult> {
@@ -36,6 +44,8 @@ export default class ErrorTemplateService {
             const newErrorTemplate: ErrorTemplateModel = await errorTemplateModel.create(errorTemplate)
 
             await this.store.bumpTags([StoreTag.ErrorTemplate])
+
+            this.errorsCount += 1
 
             return this.errorTemplateDataMapper.toEntity(newErrorTemplate)
         } catch (err) {
