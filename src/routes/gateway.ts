@@ -1,19 +1,11 @@
 import { Env } from '@diia-inhouse/env'
-import {
-    ActionVersion,
-    DocumentType,
-    HttpMethod,
-    PartnerErrorTemplateScope,
-    PartnerFaqScope,
-    PartnerScopeType,
-    PartnerStoreScope,
-    ProfileFeature,
-    SessionType,
-} from '@diia-inhouse/types'
+import { ActionVersion, HttpMethod, ProfileFeature, SessionType } from '@diia-inhouse/types'
 
 import { MimeType, RouteHeaderRawName } from '@interfaces/index'
 import { ProfileFeatureExpression } from '@interfaces/profileFeature'
 import { AppRoute } from '@interfaces/routes/appRoute'
+import { PartnerErrorTemplateScope, PartnerFaqScope, PartnerScopeType, PartnerStoreScope } from '@interfaces/routes/gateway'
+import { DocumentType } from '@interfaces/services/documents'
 
 const maxCountOfFiles = 5
 

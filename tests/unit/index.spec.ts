@@ -10,11 +10,9 @@ jest.mock('@src/bootstrap', () => ({
     bootstrap,
 }))
 
-// import '@src/index'
-
 describe('Index', () => {
     it('should initTracing and call app bootstrap', () => {
-        // eslint-disable-next-line node/no-missing-require
+        // eslint-disable-next-line n/no-missing-require
         require('@src/index')
         expect(initTracing).toHaveBeenCalledWith('Gateway')
         expect(bootstrap).toHaveBeenCalledWith('Gateway')

@@ -1,13 +1,21 @@
-import { AsyncLocalStorage } from 'async_hooks'
-import { randomUUID } from 'crypto'
-import * as url from 'url'
+import { AsyncLocalStorage } from 'node:async_hooks'
+import { randomUUID } from 'node:crypto'
+import * as url from 'node:url'
 
-import { INVALID_TRACEID, SpanKind, context, isValidTraceId, propagation, trace } from '@opentelemetry/api'
-import { SemanticAttributes } from '@opentelemetry/semantic-conventions'
 import { find, isEmpty, pick } from 'lodash'
-import { Context } from 'moleculer'
+import type { Context } from 'moleculer'
 
-import { AppApiService, actionTypesJsonParse } from '@diia-inhouse/diia-app'
+import {
+    AppApiService,
+    INVALID_TRACEID,
+    SEMATTRS_MESSAGING_DESTINATION,
+    SEMATTRS_MESSAGING_SYSTEM,
+    SpanKind,
+    context,
+    isValidTraceId,
+    propagation,
+    trace,
+} from '@diia-inhouse/diia-app'
 
 import { RequestMechanism } from '@diia-inhouse/diia-metrics'
 import { AlsData, FileType, HttpMethod, HttpStatusCode, Logger } from '@diia-inhouse/types'
@@ -108,8 +116,8 @@ export default (
                 if (action) {
                     span.updateName(`send ${action}`)
                     span.setAttributes({
-                        [SemanticAttributes.MESSAGING_SYSTEM]: RequestMechanism.Moleculer,
-                        [SemanticAttributes.MESSAGING_DESTINATION]: destinationServiceName,
+                        [SEMATTRS_MESSAGING_SYSTEM]: RequestMechanism.Moleculer,
+                        [SEMATTRS_MESSAGING_DESTINATION]: destinationServiceName,
                     })
                 }
             })
@@ -225,7 +233,7 @@ export default (
                     }
 
                     try {
-                        const template = await errorTemplateService.fetchErrorTemplateByCode(errorCode)
+                        const template = await errorTemplateService.fetchErrorTemplateByCode(errorCode, session, parsedUrl)
                         if (template) {
                             const {
                                 template: { description },
@@ -238,7 +246,7 @@ export default (
                         delete data.errorCode
 
                         trackingUtils.trackError(error, defaultMetricLabels, requestStart, span)
-                    } catch (err) {
+                    } catch {
                         const errorMessage = `Failed to fetch error template by code ${errorCode}`
                         const exception: ResponseError = {
                             ...error,
@@ -253,14 +261,14 @@ export default (
 
                 trackingUtils.trackSuccess(defaultMetricLabels, requestStart, span)
 
-                return actionTypesJsonParse(data)
+                return data
             })
         },
 
         // Method is not awaited on calling side. Should call res.end and handle rejections
         async onError(req: Request, res: Response, err: ResponseError): Promise<void> {
             try {
-                const { $params, $route, parsedUrl, $ctx, $alias } = req
+                const { $params, $route, parsedUrl, $ctx, $alias, method } = req
                 const { fullPath: path, action } = $alias || {}
 
                 return await asyncLocalStorage.run({ logData: { traceId: $params?.headers?.traceId } }, async () => {
@@ -278,14 +286,14 @@ export default (
 
                     res.setHeader('Content-Type', 'application/json; charset=utf-8')
                     if (err.data?.processCode) {
-                        const { processCode, $processDataParams } = err.data
+                        const { processCode, $processDataParams, code } = err.data
                         if (Utils.isErrorCode(processCode)) {
                             err.code = HttpStatusCode.BAD_REQUEST
                             err.errorCode = processCode
                             delete err.data.processCode
                             delete err.data.$processDataParams
 
-                            const template = await errorTemplateService.fetchErrorTemplateByCode(processCode)
+                            const template = await errorTemplateService.fetchErrorTemplateByCode(processCode, $params?.session, parsedUrl)
                             if (template) {
                                 const {
                                     template: { description },
@@ -309,7 +317,7 @@ export default (
                                 return
                             }
 
-                            err.code = err.data.code && NetworkUtils.isHttpCode(err.data.code) ? err.data.code : HttpStatusCode.BAD_REQUEST
+                            err.code = code && NetworkUtils.isHttpCode(code) ? code : HttpStatusCode.BAD_REQUEST
                             err.data.description = 'Process code template is not provided. Ask tech support for details'
                         }
                     }
@@ -381,7 +389,7 @@ export default (
 
                     logger.error('Error while call to endpoint', {
                         duration: Utils.calculateResponseTime(req),
-                        method: req.method,
+                        method,
                         path,
                         originalUrl: req.url,
                         statusCode,
@@ -393,8 +401,8 @@ export default (
                     res.writeHead(statusCode)
                     res.end(JSON.stringify(errObj, null, 2))
                 })
-            } catch (e) {
-                logger.error('Failed to process route onError hook', { err: e })
+            } catch (err_) {
+                logger.error('Failed to process route onError hook', { err: err_ })
 
                 res.writeHead(HttpStatusCode.INTERNAL_SERVER_ERROR)
                 res.end()

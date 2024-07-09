@@ -1,0 +1,166 @@
+[
+    {
+        "processCode": 52101001,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Рахунків не знайдено",
+                "description": "Дії не вдалося підтвердити доступний до виплати вклад у вибраному збанкрутілому банку. Якщо ви впевнені, що мали там рахунки і ще не отримували за них виплати, будь ласка, зверніться до Фонду гарантування вкладів для уточнення деталей.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "depositGuaranteePayments"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 52101002,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Зараз неможливо відкрити картку",
+                "description": "На жаль, не вдається сформувати список банків, в яких можна відкрити картку єПідтримка для виплати. Будь ласка, повертайтеся трохи пізніше.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "cancel"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 52101003,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "👍",
+                "title": "Дякуємо, заяву надіслано",
+                "description": "Заява полетіла в обробку. Очікуйте на сповіщення про результат.",
+                "mainButton": {
+                    "name": "Продовжити",
+                    "action": "depositGuaranteePaymentsStatus"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 52101004,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "👍",
+                "title": "Дякуємо, Дія прийняла заяву",
+                "description": "Поки що не вдалося надіслати заяву. Однак ми спробуємо відправити повторно трохи пізніше. Будь ласка, дочекайтеся сповіщення про результат.",
+                "mainButton": {
+                    "name": "Продовжити",
+                    "action": "depositGuaranteePaymentsStatus"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 52201001,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Скасувати заяву?",
+                "description": "Якщо так, відновити її неможливо. Потрібно створювати нову.",
+                "mainButton": {
+                    "name": "Так, скасувати",
+                    "action": "cancelApplication"
+                },
+                "alternativeButton": {
+                    "name": "Ні, зберегти",
+                    "action": "skip"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 52201002,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "👍",
+                "title": "Заяву скасовано",
+                "description": "Що було — загуло.",
+                "mainButton": {
+                    "name": "Дякую",
+                    "action": "depositGuaranteePayments"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 52301001,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Заяву скасовано",
+                "description": "Повторно подати заяву можна будь-коли.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "depositGuaranteePayments"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 52301002,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Неможливо подати заяву",
+                "description": "Йой! Час на створення заяви сплив. Будь ласка, створіть нову заяву.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "depositGuaranteePayments"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 52301003,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "🤔",
+                "title": "Заяву вже надіслано",
+                "description": "Ви вже відправили заяву в обробку. Очікуйте на сповіщення про результат.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "depositGuaranteePaymentsStatus"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 52301004,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Статус заяви змінено",
+                "description": "Його змінили з іншого пристрою. Перш ніж продовжити, будь ласка, перевірте всі дані.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "depositGuaranteePaymentsStatus"
+                }
+            }
+        }
+    }
+]

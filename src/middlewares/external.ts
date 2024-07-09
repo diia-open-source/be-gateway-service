@@ -24,9 +24,9 @@ export default class ExternalMiddleware {
                 const responseTransformer = externalAlias.responseTransformer ?? jsonResponseTransformer
 
                 res.end(responseTransformer(res, externalResponse))
-            } catch (e) {
-                await utils.handleError(e, (err) => {
-                    next(err)
+            } catch (err) {
+                await utils.handleError(err, (apiError) => {
+                    next(apiError)
                 })
             }
         }

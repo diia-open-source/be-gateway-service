@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
         <title><%= data.title %></title>
@@ -22,7 +22,9 @@
                 transition: background-color 0.2s;
                 user-select: none;
                 cursor: pointer;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+                box-shadow:
+                    0 1px 3px rgba(0, 0, 0, 0.12),
+                    0 1px 2px rgba(0, 0, 0, 0.24);
             }
             .m-btn.primary {
                 background-color: var(--primary-color);
@@ -92,7 +94,9 @@
                 transition: background-color 0.2s;
                 user-select: none;
                 color: var(--primary-color);
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+                box-shadow:
+                    0 1px 3px rgba(0, 0, 0, 0.12),
+                    0 1px 2px rgba(0, 0, 0, 0.24);
                 left: 0;
             }
             .selector-container option {
@@ -129,7 +133,9 @@
                 max-height: 750px;
                 overflow: hidden;
                 border: 1px solid var(--border-color);
-                box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+                box-shadow:
+                    0 14px 28px rgba(0, 0, 0, 0.25),
+                    0 10px 10px rgba(0, 0, 0, 0.22);
             }
             .dialog-box-header {
                 position: sticky;
@@ -184,7 +190,10 @@
                 cursor: pointer;
                 height: 24px;
                 position: relative;
-                transition: border 0.25s 0.15s, box-shadow 0.25s 0.3s, padding 0.25s;
+                transition:
+                    border 0.25s 0.15s,
+                    box-shadow 0.25s 0.3s,
+                    padding 0.25s;
                 min-width: 48px;
                 width: 48px;
                 vertical-align: top;
@@ -201,7 +210,10 @@
                 right: 22px;
                 display: block;
                 height: 22px;
-                transition: border 0.25s 0.15s, left 0.25s 0.1s, right 0.15s 0.175s;
+                transition:
+                    border 0.25s 0.15s,
+                    left 0.25s 0.1s,
+                    right 0.15s 0.175s;
             }
             /* Toggle Body - Checked */
             input[type='checkbox']:checked {
@@ -233,7 +245,9 @@
             }
             #token-snackbar.show {
                 visibility: visible;
-                animation: fadein 0.5s, fadeout 0.5s 2.5s;
+                animation:
+                    fadein 0.5s,
+                    fadeout 0.5s 2.5s;
             }
             @keyframes fadein {
                 from {
@@ -257,9 +271,10 @@
             }
         </style>
         <script
-            src="https://unpkg.com/rapidoc@9.3.3/dist/rapidoc-min.js"
-            integrity="sha384-ZYtDt37eQMO8/M1YdRP3IMz6pZEFp5EvWSXA2tSC/G2aZwFUKc59srHeZLNV+1JG"
+            src="https://cdnjs.cloudflare.com/ajax/libs/rapidoc/9.3.3/rapidoc-min.js"
+            integrity="sha512-IqwxAUOKeDBseg67em0HTCqiklC6Bhu8E74aNEiM/1CqvozxFFiuMrcWhbn31Wbh8liSSoERRvP8tFqI2M9e4g=="
             crossorigin="anonymous"
+            referrerpolicy="no-referrer"
         ></script>
 
         <script>

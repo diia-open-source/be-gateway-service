@@ -1,9 +1,21 @@
-import { AsyncLocalStorage } from 'async_hooks'
+import { AsyncLocalStorage } from 'node:async_hooks'
 
-jest.mock('awilix', () => {
-    const originAwilix = jest.requireActual('awilix')
+jest.mock('glob', () => {
+    const originPath = jest.requireActual('glob')
 
-    return { ...originAwilix, listModules: (): unknown => originAwilix.listModules('src/routes/*.ts') }
+    return {
+        ...originPath,
+        globSync: (path: string): string => originPath.globSync(path.replace('dist', 'src').replace('js', 'ts')),
+    }
+})
+
+jest.mock('path', () => {
+    const originPath = jest.requireActual('path')
+
+    return {
+        ...originPath,
+        resolve: (path: string): string => originPath.resolve(path.replace('dist', 'src')),
+    }
 })
 
 import { AuthService } from '@diia-inhouse/crypto'
@@ -70,7 +82,7 @@ describe('RoutesBuilder', () => {
     )
     const headerMiddleware = new HeaderMiddlewareMock(<HeaderValidation>{}, <AuthenticateMiddleware>{}, <AsyncLocalStorage<AlsData>>{})
     const fileUploadMiddleware = new FileMiddlewareMock(<CacheService>{}, <Logger>{})
-    const multipartMiddleware = new MultipartMiddlewareMock(<Logger>{})
+    const multipartMiddleware = new MultipartMiddlewareMock(<Logger>{}, jest.fn())
     const redirectMiddleware = new RedirectMiddlewareMock(<Logger>{})
     const externalMiddleware = new ExternalMiddlewareMock(<Logger>{}, <ExternalCommunicator>{})
     const proxyMiddleware = new ProxyMiddlewareMock(<EnvService>{}, <Logger>{}, <ProcessDataService>{}, deployedServiceName, tracking)
@@ -104,15 +116,15 @@ describe('RoutesBuilder', () => {
 
             const routesNames = Object.keys(aliases)
 
-            routesNames.forEach((routeName: string) => {
+            for (const routeName of routesNames) {
                 const [method, path] = routeName.split(' ')
                 const isHttpMethod = new RegExp(`${Object.values(HttpMethod).join('|')}`, 'gi')
 
                 expect(isHttpMethod.test(method)).toBeTruthy()
                 expect(path).toBeTruthy()
-            })
+            }
 
-            routesNames.slice(0, routeHandlersCheckLimit).forEach((routeName: string) => {
+            for (const routeName of routesNames.slice(0, routeHandlersCheckLimit)) {
                 const [method, url] = routeName.split(' ')
                 const req = {
                     $ctx: { locals: {} },
@@ -128,13 +140,13 @@ describe('RoutesBuilder', () => {
 
                 const routeHandlers = <CallableFunction[]>aliases[routeName].filter((routeHandler) => typeof routeHandler === 'function')
 
-                routeHandlers.forEach((routeHandler: CallableFunction) => {
+                for (const routeHandler of routeHandlers) {
                     routeHandler(req, res, next)
-                })
+                }
 
                 expect(asyncLocalStorage.run).toHaveBeenCalledWith(expect.anything(), next)
                 expect(next).toHaveBeenCalledWith()
-            })
+            }
         })
     })
 })

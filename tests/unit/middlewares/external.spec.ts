@@ -1,5 +1,5 @@
 import DiiaLogger from '@diia-inhouse/diia-logger'
-import { ExternalCommunicator, ExternalEvent } from '@diia-inhouse/diia-queue'
+import { ExternalCommunicator } from '@diia-inhouse/diia-queue'
 import TestKit, { mockClass } from '@diia-inhouse/test'
 
 import { Request, Response } from '../../../src/interfaces'
@@ -7,6 +7,7 @@ import { Request, Response } from '../../../src/interfaces'
 import ExternalMiddleware from '@src/middlewares/external'
 
 import { ExternalAlias } from '@interfaces/index'
+import { ExternalEvent } from '@interfaces/queue'
 
 const DiiaLoggerMock = mockClass(DiiaLogger)
 

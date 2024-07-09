@@ -1,18 +1,11 @@
+import { formidable } from 'formidable'
+
 import DiiaLogger from '@diia-inhouse/diia-logger'
 import { mockClass } from '@diia-inhouse/test'
 
 import { Request, Response, RouteHeaderRawName } from '../../../src/interfaces'
 
 import MultipartMiddleware from '@src/middlewares/multipart'
-
-const formidableParse = jest.fn()
-
-jest.mock(
-    'formidable',
-    (): CallableFunction => () => ({
-        parse: formidableParse,
-    }),
-)
 
 const DiiaLoggerMock = mockClass(DiiaLogger)
 
@@ -49,7 +42,8 @@ describe('MultipartMiddleware', () => {
                 expect(responseMock.end).not.toHaveBeenCalled()
             })
 
-            const middleware = new MultipartMiddleware(loggerMock)
+            const Formidable: typeof formidable = jest.fn().mockReturnValueOnce({ parse: jest.fn() })
+            const middleware = new MultipartMiddleware(loggerMock, Formidable)
 
             middleware.parse(reqMock, responseMock, nextMock)
         })
@@ -65,22 +59,18 @@ describe('MultipartMiddleware', () => {
                     body: {},
                 },
             }
-            const mockRes: Response = <Response>{}
-            const fields = { field: 'fields ' }
-
-            formidableParse.mockImplementationOnce((_incomingRequest, callback) => {
-                callback(undefined, fields)
-            })
-
             const next = jest.fn((err) => {
                 expect(next).toHaveBeenCalled()
                 expect(err).toBeUndefined()
                 expect(loggerMock.error).not.toHaveBeenCalled()
             })
 
-            const middleware = new MultipartMiddleware(loggerMock)
+            const Formidable: typeof formidable = jest
+                .fn()
+                .mockReturnValueOnce({ parse: jest.fn((_incomingRequest, callback) => callback(undefined, { field: 'fields' })) })
+            const middleware = new MultipartMiddleware(loggerMock, Formidable)
 
-            middleware.parse(mockReq, mockRes, next)
+            middleware.parse(mockReq, <Response>{}, next)
         })
 
         it('should log error if it was occurred during parsing', () => {
@@ -97,18 +87,16 @@ describe('MultipartMiddleware', () => {
             const mockRes: Response = <Response>{}
             const fields = { field: 'fields ' }
             const mockedError = new Error('Mocked error')
-
-            formidableParse.mockImplementationOnce((_incomingRequest, callback) => {
-                callback(mockedError, fields)
-            })
-
             const next = jest.fn((err) => {
                 expect(next).toHaveBeenCalled()
                 expect(err).toEqual(mockedError)
                 expect(loggerMock.error).toHaveBeenCalledWith('Unable to parse multipart', { error: mockedError })
             })
 
-            const middleware = new MultipartMiddleware(loggerMock)
+            const Formidable: typeof formidable = jest
+                .fn()
+                .mockReturnValueOnce({ parse: jest.fn((_incomingRequest, callback) => callback(mockedError, fields)) })
+            const middleware = new MultipartMiddleware(loggerMock, Formidable)
 
             middleware.parse(mockReq, mockRes, next)
         })

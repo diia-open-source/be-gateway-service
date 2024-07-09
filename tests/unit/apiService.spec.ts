@@ -1,4 +1,3 @@
-const actionTypesJsonParse = jest.fn()
 const utilsMock = {
     calculateResponseTime: jest.fn(),
     isErrorCode: jest.fn(),
@@ -43,12 +42,11 @@ jest.mock('@opentelemetry/api', () => {
         trace: traceMock,
     }
 })
-jest.mock('@diia-inhouse/diia-app', () => ({ actionTypesJsonParse }))
 jest.mock('@utils/index', () => utilsMock)
 
-import { AsyncLocalStorage } from 'async_hooks'
+import { AsyncLocalStorage } from 'node:async_hooks'
 
-import { SpanStatusCode } from '@opentelemetry/api'
+import { SpanStatusCode } from '@diia-inhouse/diia-app'
 
 import DiiaLogger from '@diia-inhouse/diia-logger'
 import { MetricsService } from '@diia-inhouse/diia-metrics'
@@ -161,8 +159,8 @@ describe('ApiService', () => {
             tracerMock.startSpan.mockReturnValue(spanMock)
             traceMock.setSpan.mockReturnValue('setSpan')
             contextMock.active.mockReturnValue(true)
-            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce(async (_ctx, cb) => {
-                await cb()
+            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce((_ctx, cb) => {
+                return cb()
             })
 
             await route.onBeforeCall(ctx, {}, req)
@@ -223,11 +221,11 @@ describe('ApiService', () => {
             }
 
             jest.spyOn(utilsMock, 'calculateResponseTime').mockReturnValue(reqDuration)
-            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce(async (_ctx, cb) => {
-                await cb()
+            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce((_ctx, cb) => {
+                return cb()
             })
 
-            await route.onAfterCall(ctx, {}, req, res, {})
+            const result = await route.onAfterCall(ctx, {}, req, res, {})
 
             expect(ip).toBe('0.0.0.0')
             expect(methods).toEqual({})
@@ -241,7 +239,7 @@ describe('ApiService', () => {
                 path: req.$alias.fullPath,
                 statusCode: HttpStatusCode.OK,
             })
-            expect(actionTypesJsonParse).toHaveBeenCalledWith({})
+            expect(result).toEqual({})
         })
 
         it.each([
@@ -288,8 +286,8 @@ describe('ApiService', () => {
             }
 
             jest.spyOn(utilsMock, 'calculateResponseTime').mockReturnValue(reqDuration)
-            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce(async (_ctx, cb) => {
-                await cb()
+            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce((_ctx, cb) => {
+                return cb()
             })
 
             route.onAfterCall(ctx, {}, req, res, data)
@@ -350,11 +348,11 @@ describe('ApiService', () => {
             const data = { $fileType: <FileType>'docx', disposition: 'attachment', filename: 'file.docx', content: 'some-content' }
 
             jest.spyOn(utilsMock, 'calculateResponseTime').mockReturnValue(reqDuration)
-            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce(async (_ctx, cb) => {
-                await cb()
+            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce((_ctx, cb) => {
+                return cb()
             })
 
-            await route.onAfterCall(ctx, {}, req, res, data)
+            const result = await route.onAfterCall(ctx, {}, req, res, data)
 
             expect(ip).toBe('0.0.0.0')
             expect(methods).toEqual({})
@@ -366,7 +364,7 @@ describe('ApiService', () => {
                 path: req.$alias.fullPath,
                 statusCode: HttpStatusCode.OK,
             })
-            expect(actionTypesJsonParse).toHaveBeenCalledWith(data)
+            expect(result).toEqual(data)
         })
 
         it('should change status code to 204 in case data is empty and method is on of [PUT,DELETE]', async () => {
@@ -410,11 +408,11 @@ describe('ApiService', () => {
             const data = null
 
             jest.spyOn(utilsMock, 'calculateResponseTime').mockReturnValue(reqDuration)
-            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce(async (_ctx, cb) => {
-                await cb()
+            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce((_ctx, cb) => {
+                return cb()
             })
 
-            await route.onAfterCall(ctx, {}, req, res, data)
+            const result = await route.onAfterCall(ctx, {}, req, res, data)
 
             expect(ip).toBe('0.0.0.0')
             expect(methods).toEqual({})
@@ -427,7 +425,7 @@ describe('ApiService', () => {
                 path: req.$alias.fullPath,
                 statusCode: HttpStatusCode.OK,
             })
-            expect(actionTypesJsonParse).toHaveBeenCalledWith(data)
+            expect(result).toEqual(data)
         })
 
         it.each([
@@ -479,11 +477,11 @@ describe('ApiService', () => {
 
             jest.spyOn(utilsMock, 'calculateResponseTime').mockReturnValue(reqDuration)
             jest.spyOn(processDataService, 'getProcessData').mockReturnValue(processData)
-            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce(async (_ctx, cb) => {
-                await cb()
+            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce((_ctx, cb) => {
+                return cb()
             })
 
-            await route.onAfterCall(ctx, {}, req, res, data)
+            const result = await route.onAfterCall(ctx, {}, req, res, data)
 
             expect(ip).toBe('0.0.0.0')
             expect(methods).toEqual({})
@@ -495,7 +493,7 @@ describe('ApiService', () => {
                 path: req.$alias.fullPath,
                 statusCode: HttpStatusCode.OK,
             })
-            expect(actionTypesJsonParse).toHaveBeenCalledWith(expectedData)
+            expect(result).toEqual(expectedData)
         })
 
         it.each([
@@ -543,7 +541,7 @@ describe('ApiService', () => {
                 { errorCode: ErrorCode.ValidationError },
                 { errorCode: ErrorCode.ValidationError },
                 (): void => {
-                    jest.spyOn(errorTemplateService, 'fetchErrorTemplateByCode').mockRejectedValueOnce(new Error())
+                    jest.spyOn(errorTemplateService, 'fetchErrorTemplateByCode').mockRejectedValueOnce(new Error('Mocked error'))
                 },
                 (): void => {
                     expect(logger.error).toHaveBeenCalledWith(`Failed to fetch error template by code ${ErrorCode.ValidationError}`)
@@ -590,12 +588,12 @@ describe('ApiService', () => {
                 }
 
                 jest.spyOn(utilsMock, 'calculateResponseTime').mockReturnValue(reqDuration)
-                jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce(async (_ctx, cb) => {
-                    await cb()
+                jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce((_ctx, cb) => {
+                    return cb()
                 })
                 initCaseStubs()
 
-                await route.onAfterCall(ctx, {}, req, res, inputData)
+                const result = await route.onAfterCall(ctx, {}, req, res, inputData)
 
                 expect(ip).toBe('0.0.0.0')
                 expect(methods).toEqual({})
@@ -608,7 +606,7 @@ describe('ApiService', () => {
                     statusCode: HttpStatusCode.OK,
                 })
                 checkCaseExpectations()
-                expect(actionTypesJsonParse).toHaveBeenCalledWith(expectedData)
+                expect(result).toEqual(expectedData)
             },
         )
     })
@@ -713,8 +711,8 @@ describe('ApiService', () => {
                 }
 
                 jest.spyOn(utilsMock, 'calculateResponseTime').mockReturnValue(reqDuration)
-                jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce(async (_ctx, cb) => {
-                    await cb()
+                jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce((_ctx, cb) => {
+                    return cb()
                 })
 
                 await route.onError(req, res, inputError)
@@ -852,8 +850,8 @@ describe('ApiService', () => {
             }
 
             jest.spyOn(utilsMock, 'calculateResponseTime').mockReturnValue(reqDuration)
-            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce(async (_ctx, cb) => {
-                await cb()
+            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce((_ctx, cb) => {
+                return cb()
             })
             initCaseStubs()
 
@@ -937,8 +935,8 @@ describe('ApiService', () => {
             jest.spyOn(utilsMock, 'isErrorCode').mockReturnValue(false)
             jest.spyOn(processDataService, 'getProcessData').mockReturnValue(processDataResult)
             jest.spyOn(utilsMock, 'calculateResponseTime').mockReturnValue(reqDuration)
-            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce(async (_ctx, cb) => {
-                await cb()
+            jest.spyOn(asyncLocalStorage, 'run').mockImplementationOnce((_ctx, cb) => {
+                return cb()
             })
 
             await route.onError(req, res, inputError)

@@ -1,7 +1,7 @@
-import { context, propagation, trace } from '@opentelemetry/api'
-import { SemanticAttributes } from '@opentelemetry/semantic-conventions'
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, RawAxiosRequestHeaders } from 'axios'
 import { identity } from 'lodash'
+
+import { SEMATTRS_MESSAGING_DESTINATION, context, propagation, trace } from '@diia-inhouse/diia-app'
 
 import { RequestMechanism } from '@diia-inhouse/diia-metrics'
 import { EnvService } from '@diia-inhouse/env'
@@ -28,9 +28,9 @@ export default class ProxyMiddleware {
 
     addRedirect(proxyTo: Proxy): Middleware {
         return async (req, res) => {
-            const { parsedUrl, $params, $alias, method, query, body } = req
+            const { parsedUrl, $params, $alias, method, query, body, $ctx, rawBody } = req
             const { serviceId, path: proxyPath, proxyHeaders } = proxyTo
-            const { span, requestStart } = req.$ctx.locals
+            const { span, requestStart } = $ctx.locals
             const { fullPath: route } = $alias || {}
 
             const url = proxyPath ?? this.envService.getVar('PROXY_PATH', 'string') + parsedUrl
@@ -46,13 +46,13 @@ export default class ProxyMiddleware {
             }
 
             if (proxyHeaders) {
-                proxyHeaders.forEach((header) => {
+                for (const header of proxyHeaders) {
                     headers[header] = req.headers[header]
-                })
+                }
             }
 
-            if (req.rawBody) {
-                headers['raw-body'] = req.rawBody.toString('base64')
+            if (rawBody) {
+                headers['raw-body'] = rawBody.toString('base64')
             }
 
             if (span) {
@@ -86,34 +86,45 @@ export default class ProxyMiddleware {
             }
 
             span?.updateName(`proxy ${route}`)
-            span?.setAttribute(SemanticAttributes.MESSAGING_DESTINATION, serviceId)
+            span?.setAttribute(SEMATTRS_MESSAGING_DESTINATION, serviceId)
 
             let axiosResponse: AxiosResponse
 
             try {
                 axiosResponse = await axios.request(config)
-            } catch (e) {
-                this.logger.error(`Error proxying to ${url}`, { err: e })
-                if (e instanceof AxiosError && e.response) {
-                    axiosResponse = e.response
+            } catch (err) {
+                if (err instanceof AxiosError && err.response) {
+                    axiosResponse = err.response
+
+                    this.logger.error(`Error proxying to ${url}`, {
+                        err: err,
+                        response: {
+                            data: axiosResponse.data?.toString(),
+                            status: axiosResponse.status,
+                            statusText: axiosResponse.statusText,
+                            headers: axiosResponse.headers,
+                        },
+                    })
 
                     this.trackingUtils.trackError(
                         {
                             name: 'ProxyError',
                             message: 'Error while proxying request',
-                            code: e.status || 500,
+                            code: err.status || 500,
                         },
                         defaultMetricLabels,
                         requestStart,
                         span,
                     )
                 } else {
-                    await utils.handleError(e, (err) => {
+                    this.logger.error(`Error proxying to ${url}`, { err: err })
+
+                    await utils.handleError(err, (apiError) => {
                         this.trackingUtils.trackError(
                             {
-                                name: err.getName(),
-                                message: err.getMessage(),
-                                code: err.getCode(),
+                                name: apiError.getName(),
+                                message: apiError.getMessage(),
+                                code: apiError.getCode(),
                             },
                             defaultMetricLabels,
                             requestStart,
@@ -121,7 +132,7 @@ export default class ProxyMiddleware {
                         )
 
                         res.writeHead(500)
-                        res.end(err.message)
+                        res.end(apiError.message)
                     })
 
                     return
@@ -130,14 +141,14 @@ export default class ProxyMiddleware {
 
             if (axiosResponse) {
                 try {
-                    this.consumeResponse(res, axiosResponse, req.parsedUrl, req.$params.session)
-                } catch (e) {
-                    await utils.handleError(e, (err) => {
+                    this.consumeResponse(res, axiosResponse, parsedUrl, $params.session)
+                } catch (err) {
+                    await utils.handleError(err, (apiError) => {
                         this.trackingUtils.trackError(
                             {
-                                name: err.getName(),
-                                message: err.getMessage(),
-                                code: err.getCode(),
+                                name: apiError.getName(),
+                                message: apiError.getMessage(),
+                                code: apiError.getCode(),
                             },
                             defaultMetricLabels,
                             requestStart,
@@ -145,7 +156,7 @@ export default class ProxyMiddleware {
                         )
 
                         res.writeHead(500)
-                        res.end(err.message)
+                        res.end(apiError.message)
                     })
                 }
             } else {
@@ -164,33 +175,36 @@ export default class ProxyMiddleware {
     ): void {
         const data = axiosResponse.data
 
+        this.logger.debug('Proxy response', { parsedUrl, axiosResponse, data: data.toString() })
+
         for (const header in axiosResponse.headers) {
             res.setHeader(header, axiosResponse.headers[header])
         }
 
-        let status = axiosResponse.status
+        let statusCode = axiosResponse.status
         if (axiosResponse.headers['content-type'] === 'application/json') {
-            const dataJson = JSON.parse(data.toString())
+            let dataJson = JSON.parse(data.toString())
             const respProcessCode = dataJson?.processCode ?? Number(axiosResponse.headers.processcode)
+
             if (respProcessCode) {
                 const { $processDataParams = undefined } = dataJson
                 const processData = this.processDataService.getProcessData(respProcessCode, $processDataParams, session, parsedUrl)
 
                 if (processData) {
-                    Object.assign(dataJson, processData)
+                    dataJson = statusCode >= HttpStatusCode.BAD_REQUEST ? { ...processData } : { ...dataJson, ...processData }
                 } else {
                     delete axiosResponse.headers.processcode
                     delete dataJson.processCode
                     delete dataJson.$processDataParams
                 }
 
-                status = HttpStatusCode.OK
+                statusCode = HttpStatusCode.OK
             }
 
             const buf = Buffer.from(JSON.stringify(dataJson))
 
             res.setHeader('content-length', buf.length.toString())
-            res.writeHead(status)
+            res.writeHead(statusCode)
             res.end(buf)
         } else {
             res.writeHead(axiosResponse.status)

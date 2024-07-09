@@ -61,9 +61,9 @@ export default class MinioStorageService {
 
         const promises: Promise<void>[] = []
 
-        files.forEach((item: File) => {
+        for (const item of files) {
             promises.push(this.uploadFile(item.buffer, item.originalname))
-        })
+        }
 
         await Promise.all(promises)
     }

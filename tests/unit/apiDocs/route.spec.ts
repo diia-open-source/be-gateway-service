@@ -109,7 +109,7 @@ describe('class `ApiDocsRoute`', () => {
             })
 
             jest.spyOn(ejsMock, 'renderFile').mockImplementationOnce(() => {
-                throw new Error()
+                throw new Error('Mocked error')
             })
 
             await result.aliases['GET /'](request, response)

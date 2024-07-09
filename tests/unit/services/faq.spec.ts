@@ -77,7 +77,7 @@ describe('FaqService', () => {
             ]
             const mockNewFaq = { session: SessionType.User, categories: expectedCategories }
 
-            jest.spyOn(storeMock, 'bumpTags').mockRejectedValueOnce(new Error())
+            jest.spyOn(storeMock, 'bumpTags').mockRejectedValueOnce(new Error('Mocked error'))
 
             await expect(() => faqService.createFaq(<Faq>(<unknown>mockNewFaq))).rejects.toBeInstanceOf(Error)
         })
@@ -144,7 +144,7 @@ describe('FaqService', () => {
             ]
             const mockFaq = { session: SessionType.User, categories: expectedCategories }
 
-            sessionMock.commitTransaction.mockRejectedValueOnce(new Error())
+            sessionMock.commitTransaction.mockRejectedValueOnce(new Error('Mocked error'))
 
             await expect(() => faqService.replaceFaq(<Faq>(<unknown>mockFaq))).rejects.toBeInstanceOf(DatabaseError)
 

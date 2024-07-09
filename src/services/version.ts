@@ -15,15 +15,18 @@ export default class VersionService {
 
         switch (platformType) {
             case PlatformType.Android:
-            case PlatformType.Huawei:
+            case PlatformType.Huawei: {
                 minAppVersion = this.config[configType].android
                 break
-            case PlatformType.iOS:
+            }
+            case PlatformType.iOS: {
                 minAppVersion = this.config[configType].ios
                 break
-            case PlatformType.Browser:
+            }
+            case PlatformType.Browser: {
                 minAppVersion = null
                 break
+            }
             default: {
                 const unknownType: never = platformType
 

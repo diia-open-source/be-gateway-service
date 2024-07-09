@@ -1,19 +1,10 @@
 import { camelCase, capitalize, isObject, kebabCase, set, startCase } from 'lodash'
-import { Service } from 'moleculer'
 import { OpenAPIV3 } from 'openapi-types'
 import { singular } from 'pluralize'
 
-import { ACTION_RESPONSE, MoleculerService } from '@diia-inhouse/diia-app'
+import { ACTION_PARAMS, ACTION_RESPONSE, MoleculerService } from '@diia-inhouse/diia-app'
 
-import {
-    ActionVersion,
-    GenericObject,
-    HttpMethod,
-    HttpStatusCode,
-    PlatformType,
-    ServiceActionArguments,
-    SessionType,
-} from '@diia-inhouse/types'
+import { ActionContext, ActionVersion, GenericObject, HttpMethod, HttpStatusCode, PlatformType, SessionType } from '@diia-inhouse/types'
 import { ValidationRule } from '@diia-inhouse/validators'
 
 import RoutesBuilder from '@src/routes'
@@ -92,19 +83,19 @@ export default class OpenApiGenerator {
 
     generateOpenApiSchemas(): void {
         const { services: serviceCatalog } = this.lazyMoleculer().service.broker.registry
-        const services: Service[] = serviceCatalog.services.filter((service: Service) => service.name !== '$node')
+        const services = serviceCatalog.services.filter((service: { name: string }) => service.name !== '$node')
         const { servicesRoutes } = this.routesBuilder
 
-        Object.entries(servicesRoutes).forEach(([serviceName, routes]) => {
-            const service = services.find(({ name }: Service) => name === serviceName)
+        for (const [serviceName, routes] of Object.entries(servicesRoutes)) {
+            const service = services.find(({ name }: { name: string }) => name === serviceName)
             const openApi: OpenAPIV3.Document = this.generateOpenApiSchema(serviceName, routes, service)
             const serviceNameKebabCase: string = kebabCase(serviceName)
 
             this.specs[serviceNameKebabCase] = openApi
-        })
+        }
     }
 
-    generateOpenApiSchema(serviceName: string, routes: AppRoute[], service?: Service): OpenAPIV3.Document {
+    generateOpenApiSchema(serviceName: string, routes: AppRoute[], service?: unknown): OpenAPIV3.Document {
         const openApi = this.prepareOpenApiObject({
             name: startCase(serviceName),
         })
@@ -114,38 +105,36 @@ export default class OpenApiGenerator {
         if (!service) {
             const serviceNotFoundMsg = `Service \`${serviceName}\` is not registered in the broker`
 
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            openApi[this.specIncomplete] = true
+            Reflect.set(openApi, this.specIncomplete, true)
             openApi.info.description = openApi.info.description?.concat(`\n${serviceNotFoundMsg}`) ?? serviceNotFoundMsg
         }
 
-        routes.forEach((route) => {
+        for (const route of routes) {
             this.generatePathsFromAction(serviceName, openApi, route, service)
-        })
+        }
 
         return openApi
     }
 
-    private generatePathsFromAction(serviceName: string, openApi: OpenAPIV3.Document, route: AppRoute, service?: Service): void {
+    private generatePathsFromAction(serviceName: string, openApi: OpenAPIV3.Document, route: AppRoute, service?: unknown): void {
         const { path: pathTemplate, method, action: actionName, auth, headers = [], metadata, proxyTo } = route
         const { paths } = openApi
 
         const actionNames: Record<string, string> = {}
 
-        auth.forEach(({ version }) => {
+        for (const { version } of auth) {
             const versionedPath = pathTemplate.replace(this.versionPathParam, version)
 
             actionNames[`${serviceName}.${actionName}.${version}`] = this.covertPathToOpenApiSpec(versionedPath)
-        })
+        }
 
-        Object.entries(actionNames).forEach(([action, path]) => {
+        for (const [action, path] of Object.entries(actionNames)) {
             const includesVersion = action.match(/\.v\d+$/)
             if (!includesVersion) {
-                return
+                continue
             }
 
-            const version: ActionVersion = <ActionVersion>includesVersion[0].replace(/\./g, '')
+            const version: ActionVersion = <ActionVersion>includesVersion[0].replaceAll('.', '')
             const descriptionFromActionName = capitalize(startCase(actionName).toLowerCase())
             const description = metadata?.summary ? descriptionFromActionName : ''
             const summary: string = metadata?.summary ?? descriptionFromActionName
@@ -174,16 +163,18 @@ export default class OpenApiGenerator {
                 }
             }
 
-            let serviceAction: ServiceActionArguments | undefined
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let serviceAction: any
             if (service) {
-                serviceAction = <ServiceActionArguments>(<unknown>service.actions[action])
+                serviceAction = Reflect.get(service, 'actions')[action]
             }
 
             let isMultipartData = false
             if (serviceAction) {
                 this.addResponseSchema(serviceAction, spec)
 
-                const { params = {} } = serviceAction.params || {}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const { params = {} }: ActionContext<any> = serviceAction[ACTION_PARAMS] || serviceAction.params || {}
 
                 if (params?.type === 'object') {
                     for (const [name, param] of Object.entries<GenericObject>(params?.props)) {
@@ -215,11 +206,10 @@ export default class OpenApiGenerator {
                             schema.properties = schema.properties || {}
 
                             if (haveValidatorBuffer) {
-                                if (param.type === 'array') {
-                                    schema.properties[name] = { ...obj, type: 'array', items: { type: 'string', format: 'binary' } }
-                                } else {
-                                    schema.properties[name] = { ...obj, type: 'string', format: 'binary' }
-                                }
+                                schema.properties[name] =
+                                    param.type === 'array'
+                                        ? { ...obj, type: 'array', items: { type: 'string', format: 'binary' } }
+                                        : { ...obj, type: 'string', format: 'binary' }
 
                                 isMultipartData = true
                             } else {
@@ -236,7 +226,7 @@ export default class OpenApiGenerator {
                 delete spec.requestBody
             }
 
-            if (spec.parameters && !spec.parameters.length) {
+            if (spec.parameters && spec.parameters.length === 0) {
                 delete spec.parameters
             }
 
@@ -245,13 +235,11 @@ export default class OpenApiGenerator {
             }
 
             set(paths, [path, method.toLowerCase()], spec)
-        })
+        }
     }
 
-    private addResponseSchema(serviceAction: ServiceActionArguments, spec: OpenAPIV3.OperationObject): void {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const schema = serviceAction[ACTION_RESPONSE]
+    private addResponseSchema(serviceAction: ActionContext, spec: OpenAPIV3.OperationObject): void {
+        const schema = Reflect.get(serviceAction, ACTION_RESPONSE)
         if (!schema) {
             return
         }
@@ -265,84 +253,79 @@ export default class OpenApiGenerator {
     }
 
     private addHeaders(version: ActionVersion, headers: CustomHeader[], spec: OpenAPIV3.OperationObject): void {
-        const headersToIgnore: RouteHeaderRawName[] = [RouteHeaderRawName.TOKEN]
+        const headersToIgnore = new Set([RouteHeaderRawName.TOKEN])
+        const filteredHeaders = (headers || [])
+            .filter(({ name }) => !headersToIgnore.has(name))
+            .filter(({ versions }) => versions.includes(version))
+        for (const { name } of filteredHeaders) {
+            const header = this.headers[name]
 
-        headers
-            ?.filter(({ name }) => !headersToIgnore.includes(name))
-            ?.filter(({ versions }) => versions.includes(version))
-            .forEach(({ name }) => {
-                const header = this.headers[name]
+            spec.parameters = spec.parameters || []
 
-                spec.parameters = spec.parameters || []
-
-                if (header) {
-                    spec.parameters.push(header)
-                } else {
-                    spec.parameters.push({
-                        in: 'header',
-                        name,
-                        schema: { type: 'string' },
-                        required: true,
-                    })
-                }
-            })
+            if (header) {
+                spec.parameters.push(header)
+            } else {
+                spec.parameters.push({
+                    in: 'header',
+                    name,
+                    schema: { type: 'string' },
+                    required: true,
+                })
+            }
+        }
     }
 
     private addAuthBadges(version: ActionVersion, auth: RouteAuthParams[], spec: OpenAPIV3.OperationObject): void {
-        auth
-            ?.filter((a) => a.version === version)
-            .forEach((authInfo) => {
-                const { sessionType, sessionTypes, scopes, permissions } = authInfo
+        const authByVersion = auth?.filter((a) => a.version === version)
+        for (const authInfo of authByVersion) {
+            const { sessionType, sessionTypes, scopes, permissions } = authInfo
 
-                const badges: { label: string; color?: string }[] = []
-                const sessionTypeColor = 'green'
-                const scopeColor = 'red'
-                const permissionColor = 'orange'
+            const badges: { label: string; color?: string }[] = []
+            const sessionTypeColor = 'green'
+            const scopeColor = 'red'
+            const permissionColor = 'orange'
 
-                if (sessionType) {
-                    badges.push({ label: sessionType, color: sessionTypeColor })
-                }
+            if (sessionType) {
+                badges.push({ label: sessionType, color: sessionTypeColor })
+            }
 
-                sessionTypes?.forEach((session) => {
+            if (sessionTypes) {
+                for (const session of sessionTypes) {
                     badges.push({ label: session, color: sessionTypeColor })
-                })
-
-                if (scopes) {
-                    Object.entries(scopes).forEach(([name, scopeList]) => {
-                        scopeList.forEach((scope: string) => {
-                            badges.push({ label: `${name}:${scope}`, color: scopeColor })
-                        })
-                    })
                 }
+            }
 
-                if (permissions) {
-                    Object.entries(permissions).forEach(([name, permissionList]) => {
-                        permissionList.forEach((permission) => {
-                            badges.push({ label: `${name}:${permission}`, color: permissionColor })
-                        })
-                    })
+            if (scopes) {
+                for (const [name, scopeList] of Object.entries(scopes)) {
+                    for (const scope of scopeList) {
+                        badges.push({ label: `${name}:${scope}`, color: scopeColor })
+                    }
                 }
+            }
 
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                spec['x-badges'] = badges
-            })
+            if (permissions) {
+                for (const [name, permissionList] of Object.entries(permissions)) {
+                    for (const permission of permissionList) {
+                        badges.push({ label: `${name}:${permission}`, color: permissionColor })
+                    }
+                }
+            }
+
+            Reflect.set(spec, 'x-badges', badges)
+        }
     }
 
     private setSecurityObject(version: ActionVersion, auth: RouteAuthParams[]): OpenAPIV3.SecurityRequirementObject[] | undefined {
         let security: OpenAPIV3.SecurityRequirementObject[] | undefined = []
+        const authByVersion = auth?.filter((a) => a.version === version)
+        for (const authInfo of authByVersion) {
+            const { sessionType, sessionTypes } = authInfo
 
-        auth
-            ?.filter((a) => a.version === version)
-            .forEach((authInfo) => {
-                const { sessionType, sessionTypes } = authInfo
-
-                if ((sessionTypes?.length === 1 && sessionTypes?.[0] === SessionType.None) || sessionType === SessionType.None) {
-                    security = undefined
-                } else {
-                    security = [{ 'http-bearer': [] }]
-                }
-            })
+            security =
+                (sessionTypes?.length === 1 && sessionTypes?.[0] === SessionType.None) || sessionType === SessionType.None
+                    ? undefined
+                    : [{ 'http-bearer': [] }]
+        }
 
         return security
     }
@@ -440,24 +423,31 @@ export default class OpenApiGenerator {
 
     private setAdditionalProperties(validationObject: GenericObject): OpenAPIV3.SchemaObject | undefined {
         const type = this.getType(validationObject)
-        if (type === 'number') {
-            return { minimum: validationObject?.min, maximum: validationObject?.max }
-        } else if (type === 'string') {
-            return { minLength: validationObject?.min, maxLength: validationObject?.max }
-        } else if (type === 'array') {
-            return { minItems: validationObject?.min, maxItems: validationObject?.max }
+        switch (type) {
+            case 'number': {
+                return { minimum: validationObject?.min, maximum: validationObject?.max }
+            }
+            case 'string': {
+                return { minLength: validationObject?.min, maxLength: validationObject?.max }
+            }
+            case 'array': {
+                return { minItems: validationObject?.min, maxItems: validationObject?.max }
+            }
+            // No default
         }
     }
 
     private covertPathToOpenApiSpec(path: string): string {
-        return path.replace(/:(\w+)/g, '{$1}')
+        return path.replaceAll(/:(\w+)/g, '{$1}')
     }
 
     private setTagsForPath(serviceName: string, path: string, metadata?: AppRoute['metadata']): string[] {
         const tags: Set<string> = new Set()
         const [tagNames = [], prefix] = this.setTagsWithoutPrefixForRoute(serviceName, path, metadata) || []
 
-        tagNames.forEach((tagName: string) => tags.add(prefix ? `${prefix}/${tagName}` : tagName))
+        for (const tagName of tagNames) {
+            tags.add(prefix ? `${prefix}/${tagName}` : tagName)
+        }
 
         return Array.from(tags)
     }
@@ -466,29 +456,29 @@ export default class OpenApiGenerator {
         const tags: Set<string> = new Set()
         const tagsWithPrefix: Set<string> = new Set()
 
-        routes.forEach(({ path, metadata }) => {
+        for (const { path, metadata } of routes) {
             const [tagNames = [], prefix] = this.setTagsWithoutPrefixForRoute(serviceName, path, metadata) || []
 
-            tagNames.forEach((tagName: string) => {
+            for (const tagName of tagNames) {
                 if (prefix) {
                     tagsWithPrefix.add(`${prefix}/${tagName}`)
                 } else {
                     tags.add(tagName)
                 }
-            })
-        })
+            }
+        }
 
         const groupedTags: Record<string, string[]> = {}
         const tagsWithPrefixArray: string[] = Array.from(tagsWithPrefix)
 
-        tagsWithPrefixArray.forEach((tag) => {
+        for (const tag of tagsWithPrefixArray) {
             const prefixName: string = tag.split('/', 1)[0]
             if (groupedTags[prefixName]) {
                 groupedTags[prefixName].push(tag)
             } else {
                 groupedTags[prefixName] = [tag]
             }
-        })
+        }
 
         return [...Array.from(tags), ...Object.values(groupedTags).flat()].map((tag) => ({ name: tag }))
     }
@@ -499,10 +489,10 @@ export default class OpenApiGenerator {
         metadata: AppRoute['metadata'],
     ): [string[], string] | undefined {
         const pathParts: string[] = path.split('/')
-        const [pathPrefix] = pathParts.filter(Boolean)
+        const pathPrefix = pathParts.find(Boolean)
         let prefix = ''
         if (pathPrefix !== 'api') {
-            const prefixName: string = camelCase(singular(pathPrefix))
+            const prefixName: string = camelCase(singular(pathPrefix || ''))
 
             prefix = prefixName[0].toUpperCase() + prefixName.slice(1)
         }
@@ -516,7 +506,7 @@ export default class OpenApiGenerator {
             serviceKebabCaseName = 'acquirers'
         }
 
-        const versionIndex: number = pathParts.findIndex((part) => part === this.versionPathParam)
+        const versionIndex: number = pathParts.indexOf(this.versionPathParam)
 
         if (versionIndex !== -1) {
             let tagPartIndex: number = versionIndex + 1

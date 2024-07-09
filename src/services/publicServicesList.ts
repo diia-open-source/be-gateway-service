@@ -76,7 +76,7 @@ export default class PublicServicesListService implements OnInit {
 
     async getPublicServices(): Promise<PublicServiceResponse[]> {
         const keys: string[] = await this.cache.getKeysByPattern(`${this.cacheKey}.*`)
-        if (!keys.length) {
+        if (keys.length === 0) {
             this.logger.error('Failed to find public services keys')
 
             return []
@@ -84,13 +84,14 @@ export default class PublicServicesListService implements OnInit {
 
         const publicServicesJSON = await this.cache.getByKeys(keys)
 
-        if (!publicServicesJSON.length) {
+        if (publicServicesJSON.length === 0) {
             this.logger.error('Failed to find public services by keys')
 
             return []
         }
 
         const publicServices: PublicServiceResponse[] = publicServicesJSON
+            // eslint-disable-next-line unicorn/prefer-native-coercion-functions
             .filter((item: null | string): item is NonNullable<typeof item> => Boolean(item))
             .map((item: string) => JSON.parse(item))
             .filter((item: PublicService) => [PublicServiceStatus.Active, PublicServiceStatus.InDevelopment].includes(item.status))

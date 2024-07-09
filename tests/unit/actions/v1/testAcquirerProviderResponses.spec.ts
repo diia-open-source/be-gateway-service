@@ -1,6 +1,5 @@
 import DiiaLogger from '@diia-inhouse/diia-logger'
 import TestKit, { mockClass } from '@diia-inhouse/test'
-import { DocumentType } from '@diia-inhouse/types'
 
 import TestAcquirerProviderShareAppAppAction from '@actions/v1/testAcquirerProviderResponses'
 
@@ -8,6 +7,7 @@ import MinioStorageService from '@services/minioStorage'
 
 import { CustomActionArguments } from '@interfaces/actions/v1/testAcquirerProviderResponse'
 import { MimeType } from '@interfaces/index'
+import { DocumentType } from '@interfaces/services/documents'
 import { AppConfig } from '@interfaces/types/config'
 
 const DiiaLoggerMock = mockClass(DiiaLogger)

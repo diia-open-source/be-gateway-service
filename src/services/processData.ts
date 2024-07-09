@@ -1,9 +1,11 @@
-import * as fs from 'fs'
-import { resolve as resolvePath } from 'path'
+import * as fs from 'node:fs'
+import path from 'node:path'
 
-import { listModules } from 'awilix'
+import { listModules } from '@diia-inhouse/diia-app'
 
-import { ActionSession, OnInit, SessionType } from '@diia-inhouse/types'
+import { ActionSession, OnInit } from '@diia-inhouse/types'
+
+import Utils from '@utils/index'
 
 import { ProcessData } from '@interfaces/services/processData'
 import { AppConfig } from '@interfaces/types/config'
@@ -37,14 +39,14 @@ export default class ProcessDataService implements OnInit {
         processCode: number,
         $processDataParams: Record<string, string> | undefined,
         session: ActionSession | undefined,
-        path: string | undefined,
+        endpointPath: string | undefined,
     ): ProcessData | undefined {
-        const eResidentProcessData = this.getEResidentProcessDataIfExists(processCode, session, path)
+        const eResidentProcessData = this.getEResidentProcessDataIfExists(processCode, session, endpointPath)
         if (eResidentProcessData) {
             return eResidentProcessData
         }
 
-        const cabinetProcessData = this.getCabinetProcessDataIfExists(processCode, session, path)
+        const cabinetProcessData = this.getCabinetProcessDataIfExists(processCode, session, endpointPath)
         if (cabinetProcessData) {
             return cabinetProcessData
         }
@@ -78,7 +80,7 @@ export default class ProcessDataService implements OnInit {
         let resultString = sourceString
 
         for (const [placeholder, value] of Object.entries(templates)) {
-            resultString = resultString.replace(new RegExp(`\\{${placeholder}\\}`, 'g'), value)
+            resultString = resultString.replaceAll(new RegExp(`\\{${placeholder}\\}`, 'g'), value)
         }
 
         return resultString
@@ -88,11 +90,11 @@ export default class ProcessDataService implements OnInit {
         const dataMap = new Map()
         const fileContent: ProcessData[] = await this.loadProcessCodesDataFromFolder(folderPath)
 
-        fileContent.forEach((data) => {
+        for (const data of fileContent) {
             const { processCode } = data
 
             dataMap.set(processCode, data)
-        })
+        }
 
         return dataMap
     }
@@ -100,9 +102,12 @@ export default class ProcessDataService implements OnInit {
     private async loadProcessCodesDataFromFolder(folderPath: string): Promise<ProcessData[]> {
         const processCodesDataFiles = listModules(`${folderPath}/*.json`)
         const processCodesDataFilesContent = await Promise.all(
-            processCodesDataFiles.map(async ({ path }) => await fs.promises.readFile(resolvePath(path), { encoding: 'utf8' })),
+            processCodesDataFiles.map(
+                async ({ path: filePath }) => await fs.promises.readFile(path.resolve(filePath), { encoding: 'utf8' }),
+            ),
         )
 
+        // eslint-disable-next-line unicorn/no-array-reduce
         const loadedProcessCodesData = processCodesDataFilesContent.reduce(
             (acc, fileContent) => {
                 const serviceProcessCodesData = JSON.parse(fileContent)
@@ -111,7 +116,7 @@ export default class ProcessDataService implements OnInit {
                     ...acc,
                     ...((serviceProcessCodesData &&
                         Array.isArray(serviceProcessCodesData) &&
-                        serviceProcessCodesData.length &&
+                        serviceProcessCodesData.length > 0 &&
                         serviceProcessCodesData) ||
                         []),
                 ]
@@ -125,13 +130,11 @@ export default class ProcessDataService implements OnInit {
     private getEResidentProcessDataIfExists(
         processCode: number,
         session: ActionSession | undefined,
-        path: string | undefined,
+        endpointPath: string | undefined,
     ): ProcessData | undefined {
-        const isEResident =
-            (session && 'user' in session && [SessionType.EResident, SessionType.EResidentApplicant].includes(session.sessionType)) ||
-            path?.startsWith('/e-resident')
+        const isEResident = Utils.isEResidentContext(session, endpointPath)
         if (isEResident) {
-            const eResidentProcessCode = parseInt(`1${processCode}`, 10)
+            const eResidentProcessCode = Number.parseInt(`1${processCode}`, 10)
 
             return this.eResidentProcessCodeDataMap.get(eResidentProcessCode)
         }
@@ -140,12 +143,11 @@ export default class ProcessDataService implements OnInit {
     private getCabinetProcessDataIfExists(
         processCode: number,
         session: ActionSession | undefined,
-        path: string | undefined,
+        endpointPath: string | undefined,
     ): ProcessData | undefined {
-        const isCabinetUser =
-            (session && 'user' in session && session.sessionType === SessionType.CabinetUser) || path?.startsWith('/cabinet/')
+        const isCabinetUser = Utils.isCabinetUserContext(session, endpointPath)
         if (isCabinetUser) {
-            const cabinetProcessCode = parseInt(`2${processCode}`, 10)
+            const cabinetProcessCode = Number.parseInt(`2${processCode}`, 10)
 
             return this.cabinetProcessCodeDataMap.get(cabinetProcessCode)
         }

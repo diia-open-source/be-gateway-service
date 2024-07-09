@@ -17,7 +17,7 @@ jest.mock('@diia-inhouse/redis', () => ({
     },
 }))
 
-import { randomUUID } from 'crypto'
+import { randomUUID } from 'node:crypto'
 
 import { MongoDBErrorCode } from '@diia-inhouse/db'
 import { ApiError, BadRequestError, ModelNotFoundError } from '@diia-inhouse/errors'
@@ -76,7 +76,7 @@ describe('ErrorTemplateService', () => {
         })
 
         it('should catch thrown exception', async () => {
-            storageServiceMock.bumpTags = jest.fn().mockRejectedValueOnce(new Error())
+            storageServiceMock.bumpTags = jest.fn().mockRejectedValueOnce(new Error('Mocked error'))
             await expect(() => errorTemplateService.createErrorTemplate(errorTemplate)).rejects.toBeInstanceOf(Error)
         })
 
@@ -137,6 +137,7 @@ describe('ErrorTemplateService', () => {
         })
 
         it('should throw error if errorTemplate was not found in DB', async () => {
+            // eslint-disable-next-line unicorn/no-useless-undefined
             errorTemplateModel.findOne = jest.fn().mockResolvedValueOnce(undefined)
 
             await expect(errorTemplateService.fetchErrorTemplateByCode(errorTemplate.errorCode)).rejects.toThrow(

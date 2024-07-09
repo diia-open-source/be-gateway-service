@@ -1,5 +1,5 @@
-import { AsyncLocalStorage } from 'async_hooks'
-import { randomUUID } from 'crypto'
+import { AsyncLocalStorage } from 'node:async_hooks'
+import { randomUUID } from 'node:crypto'
 
 import { BadRequestError } from '@diia-inhouse/errors'
 import { ActionVersion, AlsData } from '@diia-inhouse/types'

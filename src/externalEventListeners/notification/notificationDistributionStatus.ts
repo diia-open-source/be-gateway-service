@@ -1,4 +1,4 @@
-import { EventBusListener, ExternalEvent, ExternalEventBus } from '@diia-inhouse/diia-queue'
+import { EventBusListener, ExternalEventBus } from '@diia-inhouse/diia-queue'
 import { ValidationError } from '@diia-inhouse/errors'
 import { ValidationSchema } from '@diia-inhouse/validators'
 
@@ -8,6 +8,7 @@ import ExternalEventListenersUtils from '@utils/externalEventListeners'
 
 import { MessagePayload } from '@interfaces/externalEventListeners'
 import { EventPayload } from '@interfaces/externalEventListeners/notification'
+import { ExternalEvent } from '@interfaces/queue'
 
 export default class NotificationDistributionStatusEventListener implements EventBusListener {
     constructor(
@@ -44,8 +45,8 @@ export default class NotificationDistributionStatusEventListener implements Even
             const message: MessagePayload = { uuid, response }
 
             await this.externalEventBus.publish(event, message)
-        } catch (error) {
-            await this.externalEventListenersUtils.handleError(error, event, uuid)
+        } catch (err) {
+            await this.externalEventListenersUtils.handleError(err, event, uuid)
         }
     }
 }

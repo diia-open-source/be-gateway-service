@@ -1,10 +1,4 @@
-import { asClass } from 'awilix'
-
-import { Application, MoleculerService, ServiceContext, ServiceOperator } from '@diia-inhouse/diia-app'
-
-import { EventBus, ExternalEventBus, Queue, ScheduledTask, Task } from '@diia-inhouse/diia-queue'
-import { CacheService, StoreService } from '@diia-inhouse/redis'
-import { mockClass } from '@diia-inhouse/test'
+import { Application, ServiceContext, ServiceOperator } from '@diia-inhouse/diia-app'
 
 import config from '@src/config'
 
@@ -19,18 +13,8 @@ export async function getApp(): Promise<ServiceOperator<AppConfig, AppDeps & Tes
 
     await app.setConfig(config)
 
-    app.setDeps(deps)
-    app.loadDepsFromFolder({ folderName: 'middlewares', nameFormatter: (name: string) => `${name}Middleware` })
-    app.overrideDeps({
-        moleculer: asClass(mockClass(MoleculerService)).singleton(),
-        queue: asClass(mockClass(Queue)).singleton(),
-        scheduledTask: asClass(mockClass(ScheduledTask)).singleton(),
-        store: asClass(mockClass(StoreService)).singleton(),
-        cache: asClass(mockClass(CacheService)).singleton(),
-        externalEventBus: asClass(mockClass(ExternalEventBus)).singleton(),
-        eventBus: asClass(mockClass(EventBus)).singleton(),
-        task: asClass(mockClass(Task)).singleton(),
-    })
+    await app.setDeps(deps)
+    await app.loadDepsFromFolder({ folderName: 'middlewares', nameFormatter: (name: string) => `${name}Middleware` })
 
-    return app.initialize()
+    return await app.initialize()
 }

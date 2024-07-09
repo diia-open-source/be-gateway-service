@@ -1,21 +1,29 @@
-import { asClass } from 'awilix'
+import { DepsFactoryFn, MoleculerService, asClass } from '@diia-inhouse/diia-app'
 
-import { DepsFactoryFn } from '@diia-inhouse/diia-app'
+import { EventBus, ExternalEventBus, Queue, ScheduledTask, Task } from '@diia-inhouse/diia-queue'
+import { CacheService, StoreService } from '@diia-inhouse/redis'
+import TestKit, { mockClass } from '@diia-inhouse/test'
 
-import { IdentifierService } from '@diia-inhouse/crypto'
-import TestKit from '@diia-inhouse/test'
-
-import deps from '@src/deps'
+import depsFactory from '@src/deps'
 
 import { TestDeps } from '@tests/interfaces/utils'
 
 import { AppDeps } from '@interfaces/application'
 import { AppConfig } from '@interfaces/types/config'
 
-export default (config: AppConfig): ReturnType<DepsFactoryFn<AppConfig, AppDeps & TestDeps>> => {
+export default async (config: AppConfig): ReturnType<DepsFactoryFn<AppConfig, AppDeps & TestDeps>> => {
+    const deps = await depsFactory(config)
+
     return {
-        identifier: asClass(IdentifierService, { injector: () => ({ identifierConfig: config.identifier.salt }) }).singleton(),
         testKit: asClass(TestKit).singleton(),
-        ...deps(config),
+        moleculer: asClass(mockClass(MoleculerService)).singleton(),
+        queue: asClass(mockClass(Queue)).singleton(),
+        scheduledTask: asClass(mockClass(ScheduledTask)).singleton(),
+        store: asClass(mockClass(StoreService)).singleton(),
+        cache: asClass(mockClass(CacheService)).singleton(),
+        externalEventBus: asClass(mockClass(ExternalEventBus)).singleton(),
+        eventBus: asClass(mockClass(EventBus)).singleton(),
+        task: asClass(mockClass(Task)).singleton(),
+        ...deps,
     }
 }

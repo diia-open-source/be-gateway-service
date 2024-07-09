@@ -20,7 +20,7 @@ export default class HeaderValidation {
             return false
         }
 
-        const pattern = /^\d{1,2}.\d{1,2}(?:.\d{1,4})?(?:.\d{1,4})?$/
+        const pattern = /^\d{1,2}.\d{1,2}(?:.\d{1,4}){0,2}$/
 
         return pattern.test(appVersion)
     }
@@ -38,7 +38,7 @@ export default class HeaderValidation {
             return false
         }
 
-        const pattern = /^\d{1,2}(?:\.\d{1,2}(?:\.\d{1,2})?)?$/
+        const pattern = /^\d{1,2}(?:\.\d{1,2}){0,2}$/
 
         return pattern.test(platformVersion)
     }

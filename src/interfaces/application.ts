@@ -1,13 +1,10 @@
-import { ServiceEvents } from 'moleculer'
+import { formidable } from 'formidable'
+import type { ServiceEvents } from 'moleculer'
 
 import { AppApiService, MoleculerService } from '@diia-inhouse/diia-app'
 
 import { CmsService } from '@diia-inhouse/cms'
-import { DatabaseService } from '@diia-inhouse/db'
-import { QueueDeps } from '@diia-inhouse/diia-queue'
-import { HealthCheck } from '@diia-inhouse/healthcheck'
 import { HttpDeps } from '@diia-inhouse/http'
-import { RedisDeps } from '@diia-inhouse/redis'
 
 import OpenApiGenerator from '@src/apiDocs/openApiGenerator'
 import ApiDocsRoute from '@src/apiDocs/route'
@@ -31,14 +28,11 @@ export type InternalDeps = {
     openApiNodeConnectedEvent: ServiceEvents
     faqProvider: FaqProvider
     lazyMoleculer: () => MoleculerService
+    formidable: typeof formidable
 }
 
 export type AppDeps = {
     config: AppConfig
-    healthCheck: HealthCheck
     cms: CmsService
-    database: DatabaseService
 } & InternalDeps &
-    QueueDeps &
-    RedisDeps &
     HttpDeps
