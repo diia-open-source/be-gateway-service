@@ -1,16 +1,15 @@
-import { resolve as resolvePath } from 'path'
+import path from 'node:path'
 
 const fsMock = {
     promises: {
         readFile: jest.fn(),
     },
 }
-const awilixMock = {
-    listModules: jest.fn(),
-}
 
-jest.mock('fs', () => fsMock)
-jest.mock('awilix', () => awilixMock)
+const listModulesMock = jest.fn()
+
+jest.mock('node:fs', () => fsMock)
+jest.mock('@diia-inhouse/diia-app', () => ({ listModules: listModulesMock }))
 
 import { ActionSession, SessionType } from '@diia-inhouse/types'
 
@@ -30,7 +29,7 @@ describe('ProcessDataService', () => {
                 },
             }
 
-            awilixMock.listModules
+            listModulesMock
                 .mockReturnValueOnce([{ path: './processCodesTemplates/auth.json' }])
                 .mockReturnValueOnce([{ path: './eResidentProcessCodesTemplates/auth.json' }])
                 .mockReturnValueOnce([{ path: './cabinetProcessCodesTemplates/auth.json' }])
@@ -52,11 +51,11 @@ describe('ProcessDataService', () => {
 
             await processDataService.onInit()
 
-            expect(fsMock.promises.readFile).toHaveBeenCalledWith(resolvePath('./processCodesTemplates/auth.json'), { encoding: 'utf8' })
-            expect(fsMock.promises.readFile).toHaveBeenCalledWith(resolvePath('./eResidentProcessCodesTemplates/auth.json'), {
+            expect(fsMock.promises.readFile).toHaveBeenCalledWith(path.resolve('./processCodesTemplates/auth.json'), { encoding: 'utf8' })
+            expect(fsMock.promises.readFile).toHaveBeenCalledWith(path.resolve('./eResidentProcessCodesTemplates/auth.json'), {
                 encoding: 'utf8',
             })
-            expect(fsMock.promises.readFile).toHaveBeenCalledWith(resolvePath('./cabinetProcessCodesTemplates/auth.json'), {
+            expect(fsMock.promises.readFile).toHaveBeenCalledWith(path.resolve('./cabinetProcessCodesTemplates/auth.json'), {
                 encoding: 'utf8',
             })
         })
@@ -221,8 +220,8 @@ describe('ProcessDataService', () => {
                 '/api/v1/path',
                 undefined,
             ],
-        ])('%s', async (_msg, processCode, $processDataParams, templatesFileContent, session, path, expectedTemplate) => {
-            awilixMock.listModules.mockReturnValue([{ path: './processCodesTemplates/auth.json' }])
+        ])('%s', async (_msg, processCode, $processDataParams, templatesFileContent, session, endpointPath, expectedTemplate) => {
+            listModulesMock.mockReturnValue([{ path: './processCodesTemplates/auth.json' }])
             fsMock.promises.readFile.mockResolvedValue(JSON.stringify(templatesFileContent))
 
             const processDataService = new ProcessDataService(<AppConfig>{
@@ -235,7 +234,7 @@ describe('ProcessDataService', () => {
 
             await processDataService.onInit()
 
-            expect(processDataService.getProcessData(processCode, $processDataParams, session, path)).toEqual(expectedTemplate)
+            expect(processDataService.getProcessData(processCode, $processDataParams, session, endpointPath)).toEqual(expectedTemplate)
         })
     })
 })

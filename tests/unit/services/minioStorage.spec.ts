@@ -120,7 +120,7 @@ describe('MinioStorageService', () => {
             const buffer = Buffer.from('test content')
             const filename = 'test.txt'
             const bucketExistsMock = jest.fn().mockReturnValueOnce(true)
-            const expectedError = new Error()
+            const expectedError = new Error('Mocked error')
             const putObjectMock = jest.fn().mockRejectedValueOnce(expectedError)
 
             clientMocked.Client.mockReturnValueOnce({

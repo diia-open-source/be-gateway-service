@@ -1,4 +1,4 @@
-import { Span, SpanStatusCode } from '@opentelemetry/api'
+import { Span, SpanStatusCode } from '@diia-inhouse/diia-app'
 
 import { MetricsService, RequestStatus, TotalRequestsLabelsMap } from '@diia-inhouse/diia-metrics'
 import { ErrorType } from '@diia-inhouse/errors'

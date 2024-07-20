@@ -60,16 +60,16 @@ export default class FileUploadMiddleware {
                     req.$params.body = Object.assign({ [field]: req.file?.buffer }, { ...req.body })
 
                     next()
-                } catch (error) {
-                    if (Utils.isError(error)) {
-                        const err = new BadRequestError(error.message)
+                } catch (err_) {
+                    if (Utils.isError(err_)) {
+                        const err = new BadRequestError(err_.message)
 
-                        this.logger.error(error.message, { err })
+                        this.logger.error(err_.message, { err })
 
                         return next(err)
                     }
 
-                    return next(error)
+                    return next(err_)
                 }
             }
 
@@ -129,7 +129,7 @@ export default class FileUploadMiddleware {
         const id = this.getAttemptIdentiifer(session)
         const key = `upload_attempts_${id}`
         const value = await this.cache.get(key)
-        const count = !value ? 1 : parseInt(value, 10) + 1
+        const count = value ? Number.parseInt(value, 10) + 1 : 1
 
         const { periodSec, max } = attempts
         if (count > max) {

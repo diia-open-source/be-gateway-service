@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto'
+import { randomUUID } from 'node:crypto'
 
 import { SetRequired } from 'type-fest'
 
@@ -6,10 +6,10 @@ import { ExternalEventBus } from '@diia-inhouse/diia-queue'
 import { ValidationError } from '@diia-inhouse/errors'
 import { PartnerSession } from '@diia-inhouse/types'
 
-import NotificationDistributionCancelEventListener from '@src/externalEventListeners/notification/NotificationDistributionCancel'
+import NotificationDistributionCancelEventListener from '@src/externalEventListeners/notification/notificationDistributionCancel'
 import NotificationDistributionCreateEventListener from '@src/externalEventListeners/notification/notificationDistributionCreate'
 import NotificationDistributionStatusEventListener from '@src/externalEventListeners/notification/notificationDistributionStatus'
-import NotificationDistributionStatusRecipientsEventListener from '@src/externalEventListeners/notification/NotificationDistributionStatusRecipients'
+import NotificationDistributionStatusRecipientsEventListener from '@src/externalEventListeners/notification/notificationDistributionStatusRecipients'
 import NotificationTemplateCreateEventListener from '@src/externalEventListeners/notification/notificationTemplateCreate'
 
 import NotificationService from '@services/notification'

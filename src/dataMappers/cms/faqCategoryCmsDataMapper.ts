@@ -7,12 +7,12 @@ export default class FaqCategoryCmsDataMapper {
     constructor(private readonly faqCmsDataMapper: FaqCmsDataMapper) {}
 
     toEntity(item: CmsFaqCategory): FaqCategory {
-        const { code, name, faq, features, order } = item
+        const { code, name, faq, features, order, sessionType } = item
 
         return {
             code,
             name,
-            sessionType: item.sessionType,
+            sessionType,
             faq: faq.data.map((faqItem) => this.faqCmsDataMapper.toEntity(faqItem.attributes)),
             features: features?.map(({ value }) => value),
             order,

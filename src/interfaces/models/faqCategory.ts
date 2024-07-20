@@ -1,5 +1,4 @@
-import { Document } from 'mongoose'
-
+import { Document } from '@diia-inhouse/db'
 import { ProfileFeature, SessionType } from '@diia-inhouse/types'
 
 export enum FaqParameterType {

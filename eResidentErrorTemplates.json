@@ -1,0 +1,14 @@
+[
+    {
+        "errorCode": 11012,
+        "template": {
+            "description": "A non-existent message template identifier was specified"
+        }
+    },
+    {
+        "errorCode": 11013,
+        "template": {
+            "description": "Validation error"
+        }
+    }
+]

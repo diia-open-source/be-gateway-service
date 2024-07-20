@@ -1,8 +1,6 @@
-import { ObjectId } from 'bson'
-
-import { PartnerScopes } from '@diia-inhouse/types'
+export type PartnerScopes = Record<string, string[]>
 
 export interface GetPartnerByTokenResult {
-    _id: ObjectId
+    _id: string
     scopes: PartnerScopes
 }

@@ -1,18 +1,12 @@
 import { Field } from 'multer'
 
-import { ExternalEvent } from '@diia-inhouse/diia-queue'
 import { Env } from '@diia-inhouse/env'
-import {
-    ActionVersion,
-    HttpMethod,
-    PartnerScopes,
-    PortalUserPetitionPermissions,
-    PortalUserPollPermissions,
-    SessionType,
-} from '@diia-inhouse/types'
+import { ActionVersion, HttpMethod, PortalUserPetitionPermissions, PortalUserPollPermissions, SessionType } from '@diia-inhouse/types'
 
 import { ExternalAlias, MimeType, Proxy, Route, RouteHeaderRawName } from '@interfaces/index'
 import { ProfileFeatureExpression } from '@interfaces/profileFeature'
+import { ExternalEvent } from '@interfaces/queue'
+import { PartnerScopes } from '@interfaces/services/partner'
 
 // in bytes
 export enum FileSize {

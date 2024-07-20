@@ -68,6 +68,7 @@ describe('SettingsService', () => {
                 appVersion: '1.0.0',
             })
 
+            // eslint-disable-next-line unicorn/no-useless-undefined
             mockGetMinAppVersion.mockClear().mockReturnValue(undefined)
 
             const result = await settingsService.isActionNeeded(action, headers)

@@ -1,4 +1,4 @@
-import * as path from 'path'
+import path from 'node:path'
 
 import * as ejs from 'ejs'
 import { kebabCase, startCase } from 'lodash'
@@ -27,9 +27,9 @@ export default class ApiDocsRoute {
     getServiceNames(): Record<string, string> {
         const services: Record<string, string> = {}
 
-        Object.keys(this.openApiGenerator.specs).forEach((spec) => {
+        for (const spec of Object.keys(this.openApiGenerator.specs)) {
             services[spec] = startCase(spec)
-        })
+        }
 
         return Object.fromEntries<string>(Object.entries<string>(services).sort())
     }

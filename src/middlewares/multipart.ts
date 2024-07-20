@@ -1,6 +1,6 @@
-import { IncomingMessage } from 'http'
+import { IncomingMessage } from 'node:http'
 
-import formidable from 'formidable'
+import { formidable as Formidable } from 'formidable'
 
 import { Logger } from '@diia-inhouse/types'
 
@@ -8,7 +8,10 @@ import { MimeType, Request, Response, RouteHeaderRawName } from '@interfaces/ind
 import { MiddlewareNext } from '@interfaces/middlewares'
 
 export default class MultipartMiddleware {
-    constructor(private readonly logger: Logger) {}
+    constructor(
+        private readonly logger: Logger,
+        private readonly formidable: typeof Formidable,
+    ) {}
 
     parse(req: Request, _res: Response, next: MiddlewareNext): void {
         const requestHeaders = req.headers
@@ -20,7 +23,7 @@ export default class MultipartMiddleware {
             return
         }
 
-        const parser = formidable({ multiples: true })
+        const parser = this.formidable({ multiples: true })
         const incomingRequest = <unknown>req
 
         parser.parse(<IncomingMessage>incomingRequest, (err: Error, fields: object): void => {

@@ -1,15 +1,15 @@
 import { kebabCase } from 'lodash'
-import { BrokerNode, Context, Service, ServiceEvents } from 'moleculer'
+import type { BrokerNode, Context, Service, ServiceEvents } from 'moleculer'
 
 import OpenApiGenerator from '@src/apiDocs/openApiGenerator'
 import RoutesBuilder from '@src/routes'
 
 import { AppConfig } from '@interfaces/types/config'
 
-export default (config: AppConfig, routesBuilder: RoutesBuilder, openApiGenerator: OpenApiGenerator): ServiceEvents => ({
+export default (config: Partial<AppConfig>, routesBuilder: RoutesBuilder, openApiGenerator: OpenApiGenerator): ServiceEvents => ({
     '$node.connected': {
         handler(ctx: Context<{ node: BrokerNode; reconnected: boolean }>): void {
-            if (!config.swagger.isEnabled) {
+            if (!config?.swagger?.isEnabled) {
                 return
             }
 
@@ -22,7 +22,7 @@ export default (config: AppConfig, routesBuilder: RoutesBuilder, openApiGenerato
             const services = <Service[]>(<unknown>brokerServices.filter((service) => service.name !== '$node'))
             const { servicesRoutes } = routesBuilder
 
-            services.forEach((service) => {
+            for (const service of services) {
                 const serviceName: string = service.name
                 const serviceNameKebabCase: string = kebabCase(serviceName)
                 const serviceSpec = openApiGenerator.specs[serviceNameKebabCase]
@@ -33,7 +33,7 @@ export default (config: AppConfig, routesBuilder: RoutesBuilder, openApiGenerato
 
                     openApiGenerator.specs[serviceNameKebabCase] = spec
                 }
-            })
+            }
         },
     },
 })

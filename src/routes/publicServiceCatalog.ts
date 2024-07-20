@@ -1,8 +1,9 @@
-import { ActionVersion, HttpMethod, PartnerPublicServiceScope, PartnerScopeType, ProfileFeature, SessionType } from '@diia-inhouse/types'
+import { ActionVersion, HttpMethod, ProfileFeature, SessionType } from '@diia-inhouse/types'
 
 import { RouteHeaderRawName } from '@interfaces/index'
 import { ProfileFeatureExpression } from '@interfaces/profileFeature'
 import { AppRoute } from '@interfaces/routes/appRoute'
+import { PartnerPublicServiceScope, PartnerScopeType } from '@interfaces/routes/publicServiceCatalog'
 
 enum PublicServiceCatalogActions {
     CreatePublicService = 'createPublicService',
@@ -17,7 +18,6 @@ enum PublicServiceCatalogActions {
 }
 
 const serviceId = 'public-service-catalog'
-const isStandalonePublicServiceCatalogEnabled = process.env.PUBLIC_SERVICES_STANDALONE_PUBLIC_SERVICE_CATALOG_IS_ENABLED === 'true'
 
 const routes: AppRoute[] = [
     {
@@ -33,8 +33,8 @@ const routes: AppRoute[] = [
                 },
             },
         ],
-        metadata: { tags: ['Public Service'] },
-        ...(isStandalonePublicServiceCatalogEnabled ? { proxyTo: { serviceId } } : {}),
+        metadata: { tags: ['Public Service Catalog'] },
+        proxyTo: { serviceId },
     },
     {
         method: HttpMethod.POST,
@@ -49,8 +49,8 @@ const routes: AppRoute[] = [
                 },
             },
         ],
-        metadata: { tags: ['Public Service Category'] },
-        ...(isStandalonePublicServiceCatalogEnabled ? { proxyTo: { serviceId } } : {}),
+        metadata: { tags: ['Public Service Catalog'] },
+        proxyTo: { serviceId },
     },
     {
         method: HttpMethod.GET,
@@ -65,8 +65,8 @@ const routes: AppRoute[] = [
                 },
             },
         ],
-        metadata: { tags: ['Public Service'] },
-        ...(isStandalonePublicServiceCatalogEnabled ? { proxyTo: { serviceId } } : {}),
+        metadata: { tags: ['Public Service Catalog'] },
+        proxyTo: { serviceId },
     },
     {
         method: HttpMethod.GET,
@@ -81,8 +81,8 @@ const routes: AppRoute[] = [
                 },
             },
         ],
-        metadata: { tags: ['Public Service Category'] },
-        ...(isStandalonePublicServiceCatalogEnabled ? { proxyTo: { serviceId } } : {}),
+        metadata: { tags: ['Public Service Catalog'] },
+        proxyTo: { serviceId },
     },
     {
         method: HttpMethod.GET,
@@ -97,8 +97,8 @@ const routes: AppRoute[] = [
                 },
             },
         ],
-        metadata: { tags: ['Public Service Category'] },
-        ...(isStandalonePublicServiceCatalogEnabled ? { proxyTo: { serviceId } } : {}),
+        metadata: { tags: ['Public Service Catalog'] },
+        proxyTo: { serviceId },
     },
     {
         method: HttpMethod.GET,
@@ -112,8 +112,8 @@ const routes: AppRoute[] = [
             { name: RouteHeaderRawName.PLATFORM_TYPE, versions: [ActionVersion.V3] },
             { name: RouteHeaderRawName.PLATFORM_VERSION, versions: [ActionVersion.V3] },
         ],
-        metadata: { tags: ['Public service catalog'] },
-        ...(isStandalonePublicServiceCatalogEnabled ? { proxyTo: { serviceId } } : {}),
+        metadata: { tags: ['Public Service Catalog'] },
+        proxyTo: { serviceId },
     },
     {
         method: HttpMethod.GET,
@@ -126,8 +126,8 @@ const routes: AppRoute[] = [
             { name: RouteHeaderRawName.PLATFORM_TYPE, versions: [ActionVersion.V3] },
             { name: RouteHeaderRawName.PLATFORM_VERSION, versions: [ActionVersion.V3] },
         ],
-        metadata: { tags: ['Public service catalog'] },
-        ...(isStandalonePublicServiceCatalogEnabled ? { proxyTo: { serviceId } } : {}),
+        metadata: { tags: ['Public Service Catalog'] },
+        proxyTo: { serviceId },
     },
     {
         method: HttpMethod.GET,
@@ -142,8 +142,8 @@ const routes: AppRoute[] = [
                 },
             },
         ],
-        metadata: { tags: ['Public Service'] },
-        ...(isStandalonePublicServiceCatalogEnabled ? { proxyTo: { serviceId } } : {}),
+        metadata: { tags: ['Public Service Catalog'] },
+        proxyTo: { serviceId },
     },
     {
         method: HttpMethod.PUT,
@@ -158,8 +158,8 @@ const routes: AppRoute[] = [
                 },
             },
         ],
-        metadata: { tags: ['Public Service'] },
-        ...(isStandalonePublicServiceCatalogEnabled ? { proxyTo: { serviceId } } : {}),
+        metadata: { tags: ['Public Service Catalog'] },
+        proxyTo: { serviceId },
     },
     {
         method: HttpMethod.PUT,
@@ -174,8 +174,8 @@ const routes: AppRoute[] = [
                 },
             },
         ],
-        metadata: { tags: ['Public Service Category'] },
-        ...(isStandalonePublicServiceCatalogEnabled ? { proxyTo: { serviceId } } : {}),
+        metadata: { tags: ['Public Service Catalog'] },
+        proxyTo: { serviceId },
     },
 ]
 

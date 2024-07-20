@@ -1,6 +1,7 @@
-import { SetRequired } from 'type-fest'
+import type { SetRequired } from 'type-fest'
 
-import { ExternalEvent, ExternalEventBus } from '@diia-inhouse/diia-queue'
+import { mongo } from '@diia-inhouse/db'
+import { ExternalEventBus } from '@diia-inhouse/diia-queue'
 import { NotFoundError, ServiceUnavailableError } from '@diia-inhouse/errors'
 import { ActionVersion, PartnerSession, PartnerTokenData, SessionType } from '@diia-inhouse/types'
 
@@ -14,6 +15,7 @@ import PartnerService from '@services/partner'
 
 import { MessageError, MessagePayload } from '@interfaces/externalEventListeners'
 import { ResponseError } from '@interfaces/index'
+import { ExternalEvent } from '@interfaces/queue'
 import { AppRoute } from '@interfaces/routes/appRoute'
 
 export default class ExternalEventListenersUtils {
@@ -35,7 +37,12 @@ export default class ExternalEventListenersUtils {
         }
 
         const { _id: id, scopes } = await this.partnerService.getPartnerByToken(partnerToken)
-        const partner: PartnerTokenData = { _id: id, scopes, sessionType: SessionType.Partner, refreshToken: null }
+        const partner: PartnerTokenData = {
+            _id: <PartnerTokenData['_id']>new mongo.ObjectId(id),
+            scopes,
+            sessionType: SessionType.Partner,
+            refreshToken: null,
+        }
         const routeAuthParams = this.authenticateMiddleware.getRouteAuthParams(ActionVersion.V1, route.auth)
 
         if (routeAuthParams?.scopes) {

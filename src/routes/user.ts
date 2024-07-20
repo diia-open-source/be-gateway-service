@@ -1,8 +1,6 @@
 import { Env } from '@diia-inhouse/env'
 import { ActionVersion, HttpMethod, ProfileFeature, SessionType } from '@diia-inhouse/types'
 
-import { DEFAULT_USER_AUTH, DEFAULT_USER_HEADERS } from '@src/routes/defaults'
-
 import { RouteHeaderRawName } from '@interfaces/index'
 import { ProfileFeatureExpression } from '@interfaces/profileFeature'
 import { AppRoute } from '@interfaces/routes/appRoute'
@@ -44,17 +42,7 @@ enum UserActions {
 
     GetEResidentFeatures = 'getEResidentFeatures',
     GetEResidentHistoryByAction = 'getEResidentHistoryByAction',
-
-    UpdateUserSettings = 'updateUserSettings',
-    GetMyInfo = 'getMyInfo',
-    GetFamily = 'getFamily',
-    GetActRecords = 'getActRecords',
-    GetUserBirthRecord = 'getUserBirthRecord',
-    HideActRecord = 'hideActRecord',
-    UnhideActRecords = 'unhideActRecords',
 }
-
-const serviceId = 'user'
 
 const routes: AppRoute[] = [
     {
@@ -608,80 +596,6 @@ const routes: AppRoute[] = [
             { name: RouteHeaderRawName.PLATFORM_TYPE, versions: [ActionVersion.V1] },
             { name: RouteHeaderRawName.PLATFORM_VERSION, versions: [ActionVersion.V1] },
         ],
-    },
-    {
-        method: HttpMethod.POST,
-        path: '/api/:apiVersion/user/settings',
-        action: UserActions.UpdateUserSettings,
-        auth: DEFAULT_USER_AUTH,
-        headers: DEFAULT_USER_HEADERS,
-        proxyTo: { serviceId },
-    },
-    {
-        method: HttpMethod.GET,
-        path: '/api/:apiVersion/my-info',
-        action: UserActions.GetMyInfo,
-        auth: DEFAULT_USER_AUTH,
-        headers: DEFAULT_USER_HEADERS,
-        proxyTo: { serviceId },
-        metadata: {
-            tags: ['My Info'],
-        },
-    },
-    {
-        method: HttpMethod.GET,
-        path: '/api/:apiVersion/my-info/family',
-        action: UserActions.GetFamily,
-        auth: DEFAULT_USER_AUTH,
-        headers: DEFAULT_USER_HEADERS,
-        proxyTo: { serviceId },
-        metadata: {
-            tags: ['My Info'],
-        },
-    },
-    {
-        method: HttpMethod.POST,
-        path: '/api/:apiVersion/my-info/act-records/:recordType',
-        action: UserActions.GetActRecords,
-        auth: DEFAULT_USER_AUTH,
-        headers: DEFAULT_USER_HEADERS,
-        proxyTo: { serviceId },
-        metadata: {
-            tags: ['My Info'],
-        },
-    },
-    {
-        method: HttpMethod.POST,
-        path: '/api/:apiVersion/my-info/user-birth-record',
-        action: UserActions.GetUserBirthRecord,
-        auth: DEFAULT_USER_AUTH,
-        headers: DEFAULT_USER_HEADERS,
-        proxyTo: { serviceId },
-        metadata: {
-            tags: ['My Info'],
-        },
-    },
-    {
-        method: HttpMethod.PUT,
-        path: '/api/:apiVersion/my-info/act-records/hide/:recordType/:id',
-        action: UserActions.HideActRecord,
-        auth: DEFAULT_USER_AUTH,
-        headers: DEFAULT_USER_HEADERS,
-        proxyTo: { serviceId },
-        metadata: {
-            tags: ['My Info'],
-        },
-    },
-    {
-        method: HttpMethod.PUT,
-        path: '/api/:apiVersion/my-info/act-records/unhide/:recordType',
-        action: UserActions.UnhideActRecords,
-        auth: DEFAULT_USER_AUTH,
-        headers: DEFAULT_USER_HEADERS,
-        proxyTo: { serviceId },
-        metadata: {
-            tags: ['My Info'],
-        },
     },
 ]
 

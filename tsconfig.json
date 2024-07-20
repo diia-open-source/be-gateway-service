@@ -11,7 +11,8 @@
         "declarationDir": "dist/types",
         "baseUrl": "./",
         "strict": true,
-        "lib": ["DOM"],
+        "skipLibCheck": true,
+        "lib": ["es2023", "DOM"],
         "paths": {
             "@services/*": ["src/services/*"],
             "@interfaces/*": ["src/interfaces/*"],

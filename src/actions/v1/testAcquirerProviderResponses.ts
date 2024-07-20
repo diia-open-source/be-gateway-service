@@ -1,12 +1,13 @@
 import { AppAction } from '@diia-inhouse/diia-app'
 
-import { ActionVersion, DocumentType, Logger, SessionType } from '@diia-inhouse/types'
+import { ActionVersion, Logger, SessionType } from '@diia-inhouse/types'
 import { ValidationSchema } from '@diia-inhouse/validators'
 
 import MinioStorageService from '@services/minioStorage'
 
 import { ActionResult, CustomActionArguments } from '@interfaces/actions/v1/testAcquirerProviderResponse'
 import { File } from '@interfaces/index'
+import { DocumentType } from '@interfaces/services/documents'
 
 export default class TestAcquirerProviderShareAppAppAction implements AppAction {
     constructor(

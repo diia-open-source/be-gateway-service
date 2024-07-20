@@ -1,4 +1,4 @@
-import { AsyncLocalStorage } from 'async_hooks'
+import { AsyncLocalStorage } from 'node:async_hooks'
 
 import DiiaLogger from '@diia-inhouse/diia-logger'
 import { QueueContext } from '@diia-inhouse/diia-queue'

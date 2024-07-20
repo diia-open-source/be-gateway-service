@@ -1,8 +1,7 @@
-import { FilterQuery, UpdateQuery } from 'mongoose'
-
-import { MongoDBErrorCode } from '@diia-inhouse/db'
+import { FilterQuery, MongoDBErrorCode, UpdateQuery } from '@diia-inhouse/db'
 import { BadRequestError, ModelNotFoundError } from '@diia-inhouse/errors'
 import { StoreService, StoreTag } from '@diia-inhouse/redis'
+import { ActionSession } from '@diia-inhouse/types'
 
 import errorTemplateModel from '@models/errorTemplate'
 
@@ -61,7 +60,17 @@ export default class ErrorTemplateService {
         return this.errorTemplateDataMapper.toEntity(updatedErrorTemplate)
     }
 
-    async fetchErrorTemplateByCode(errorCode: number): Promise<ErrorTemplateResult> {
+    async fetchErrorTemplateByCode(errorCode: number, session?: ActionSession, path?: string): Promise<ErrorTemplateResult> {
+        const code = this.getEResidentErrorCode(errorCode, session, path) || errorCode
+
+        return await this.getErrorTemplateByCode(code)
+    }
+
+    private getEResidentErrorCode(errorCode: number, session?: ActionSession, path?: string): number | null {
+        return Utils.isEResidentContext(session, path) ? Number.parseInt(`1${errorCode}`, 10) : null
+    }
+
+    private async getErrorTemplateByCode(errorCode: number): Promise<ErrorTemplateResult> {
         const storeKey: string = this.getStoreKey(errorCode)
 
         const cachedErrorTemplate = await this.store.getUsingTags(storeKey)

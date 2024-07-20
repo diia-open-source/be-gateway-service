@@ -1,65 +1,132 @@
-import { BalancingStrategy, CorsConfig, MetricsConfig, TracingConfig, TransporterConfig } from '@diia-inhouse/diia-app'
+import { BaseConfig, CorsConfig, TracingConfig } from '@diia-inhouse/diia-app'
 
 import { StrapiConfig } from '@diia-inhouse/cms'
-import { IdentifierConfig } from '@diia-inhouse/crypto'
 import { AppDbConfig, ReplicaSetNodeConfig } from '@diia-inhouse/db'
-import { ListenerOptions, QueueConfig, QueueConnectionConfig, QueueConnectionType } from '@diia-inhouse/diia-queue'
+import { QueueConfigType, QueueConnectionType } from '@diia-inhouse/diia-queue'
 import { EnvService } from '@diia-inhouse/env'
-import { HealthCheckConfig } from '@diia-inhouse/healthcheck'
-import { RedisConfig } from '@diia-inhouse/redis'
-import { DurationMs, DurationS, GenericObject, HttpMethod } from '@diia-inhouse/types'
+import { RedisOptions } from '@diia-inhouse/redis'
+import { DurationMs, DurationS, HttpMethod } from '@diia-inhouse/types'
 
 import { AuthConfig, MinioConfig } from '@interfaces/config'
+import {
+    ExternalEvent,
+    ExternalTopic,
+    InternalEvent,
+    InternalQueueName,
+    InternalTopic,
+    ScheduledTaskEvent,
+    ScheduledTaskQueueName,
+} from '@interfaces/queue'
 import { MinAppVersionConfigType } from '@interfaces/services/version'
 
-export default async (envService: EnvService, serviceName: string): Promise<GenericObject> => {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export default async (envService: EnvService, serviceName: string) => {
     const PORT = envService.getVar('APP_PORT', 'number')
 
     const signAlgorithm = 'RS256'
 
     return {
         isMoleculerEnabled: true,
-        transporter: <TransporterConfig>{
+        transporter: {
             type: envService.getVar('TRANSPORT_TYPE', 'string'),
             options: envService.getVar('TRANSPORT_OPTIONS', 'object', {}),
         },
 
-        balancing: <BalancingStrategy>{
-            strategy: process.env.BALANCING_STRATEGY_NAME,
+        balancing: {
+            strategy: envService.getVar('BALANCING_STRATEGY_NAME'),
             strategyOptions: envService.getVar('BALANCING_STRATEGY_OPTIONS', 'object', {}),
         },
 
-        db: <AppDbConfig>{
-            database: process.env.MONGO_DATABASE,
-            replicaSet: process.env.MONGO_REPLICA_SET,
-            user: await envService.getSecret('MONGO_USER', 'username'),
-            password: await envService.getSecret('MONGO_PASSWORD', 'password'),
-            authSource: process.env.MONGO_AUTH_SOURCE,
+        db: {
+            database: envService.getVar('MONGO_DATABASE'),
+            replicaSet: envService.getVar('MONGO_REPLICA_SET'),
+            user: await envService.getSecret('MONGO_USER', { accessor: 'username', nullable: true }),
+            password: await envService.getSecret('MONGO_PASSWORD', { accessor: 'password', nullable: true }),
+            authSource: envService.getVar('MONGO_AUTH_SOURCE', 'string', null),
             port: envService.getVar('MONGO_PORT', 'number'),
-            replicaSetNodes:
-                process.env.MONGO_HOSTS &&
-                process.env.MONGO_HOSTS.split(',').map((replicaHost: string): ReplicaSetNodeConfig => ({ replicaHost })),
-            readPreference: process.env.MONGO_READ_PREFERENCE,
+            replicaSetNodes: envService
+                .getVar('MONGO_HOSTS', 'string')
+                .split(',')
+                .map((replicaHost: string) => ({ replicaHost })),
+            readPreference: envService.getVar('MONGO_READ_PREFERENCE'),
             indexes: {
-                sync: process.env.MONGO_INDEXES_SYNC === 'true',
-                exitAfterSync: process.env.MONGO_INDEXES_EXIT_AFTER_SYNC === 'true',
+                sync: envService.getVar('MONGO_INDEXES_SYNC', 'boolean'),
+                exitAfterSync: envService.getVar('MONGO_INDEXES_EXIT_AFTER_SYNC', 'boolean'),
             },
         },
 
-        redis: <RedisConfig>{
-            readWrite: envService.getVar('REDIS_READ_WRITE_OPTIONS', 'object'),
-
-            readOnly: envService.getVar('REDIS_READ_ONLY_OPTIONS', 'object'),
+        redis: {
+            readWrite: <RedisOptions>envService.getVar('REDIS_READ_WRITE_OPTIONS', 'object'),
+            readOnly: <RedisOptions>envService.getVar('REDIS_READ_ONLY_OPTIONS', 'object'),
         },
 
-        store: <RedisConfig>{
-            readWrite: envService.getVar('STORE_READ_WRITE_OPTIONS', 'object'),
-
-            readOnly: envService.getVar('STORE_READ_ONLY_OPTIONS', 'object'),
+        store: {
+            readWrite: <RedisOptions>envService.getVar('STORE_READ_WRITE_OPTIONS', 'object'),
+            readOnly: <RedisOptions>envService.getVar('STORE_READ_ONLY_OPTIONS', 'object'),
         },
 
-        rabbit: <QueueConnectionConfig>{
-            [QueueConnectionType.Internal]: <QueueConfig>{
+        rabbit: {
+            serviceRulesConfig: {
+                internalEvents: Object.values(InternalEvent),
+                portalEvents: [],
+                queuesConfig: {
+                    [QueueConfigType.Internal]: {
+                        [ScheduledTaskQueueName.ScheduledTasksQueueGateway]: {
+                            topics: [InternalTopic.TopicScheduledTasks],
+                        },
+                    },
+                },
+                servicesConfig: {
+                    [QueueConfigType.Internal]: {
+                        subscribe: [ScheduledTaskQueueName.ScheduledTasksQueueGateway],
+                        publish: [InternalTopic.TopicGatewayUserActivity],
+                    },
+                    [QueueConfigType.External]: {
+                        subscribe: [
+                            ExternalEvent.NotificationTemplateCreate,
+                            ExternalEvent.NotificationDistributionCreate,
+                            ExternalEvent.NotificationDistributionStatus,
+                            ExternalEvent.NotificationDistributionStatusRecipients,
+                            ExternalEvent.NotificationDistributionCancel,
+                        ],
+                        publish: [],
+                    },
+                },
+                topicsConfig: {
+                    [QueueConfigType.Internal]: {
+                        [InternalTopic.TopicScheduledTasks]: {
+                            events: Object.values(ScheduledTaskEvent),
+                        },
+                        [InternalTopic.TopicGatewayUserActivity]: {
+                            events: [InternalEvent.GatewayUserActivity],
+                        },
+                    },
+                    [QueueConfigType.External]: {
+                        [ExternalTopic.NotificationDistribution]: {
+                            events: [
+                                ExternalEvent.NotificationTemplateCreate,
+                                ExternalEvent.NotificationDistributionCreate,
+                                ExternalEvent.NotificationDistributionStatus,
+                                ExternalEvent.NotificationDistributionStatusRecipients,
+                                ExternalEvent.NotificationDistributionCancel,
+                            ],
+                        },
+                        [ExternalTopic.OfficePoll]: {
+                            events: [
+                                ExternalEvent.OfficePollCreateAndPublish,
+                                ExternalEvent.OfficePollGet,
+                                ExternalEvent.OfficePollOnboarding,
+                                ExternalEvent.OfficePollDelete,
+                                ExternalEvent.OfficePollCount,
+                            ],
+                        },
+                        [ExternalTopic.AcquirerSharing]: {
+                            events: [ExternalEvent.AcquirerDocumentRequest, ExternalEvent.AcquirerDocumentResponse],
+                        },
+                    },
+                },
+            },
+            [QueueConnectionType.Internal]: {
                 connection: {
                     hostname: process.env.RABBIT_HOST,
                     port: envService.getVar('RABBIT_PORT', 'number', 5672),
@@ -75,11 +142,13 @@ export default async (envService: EnvService, serviceName: string): Promise<Gene
                 reconnectOptions: {
                     reconnectEnabled: true,
                 },
-                listenerOptions: <ListenerOptions>{
+                listenerOptions: {
                     prefetchCount: envService.getVar('RABBIT_QUEUE_PREFETCH_COUNT', 'number', 10),
                 },
+                queueName: InternalQueueName.QueueGateway,
+                scheduledTaskQueueName: ScheduledTaskQueueName.ScheduledTasksQueueGateway,
             },
-            [QueueConnectionType.External]: <QueueConfig>{
+            [QueueConnectionType.External]: {
                 connection: {
                     hostname: process.env.EXTERNAL_RABBIT_HOST,
                     port: envService.getVar('EXTERNAL_RABBIT_PORT', 'number', 5672),
@@ -95,19 +164,19 @@ export default async (envService: EnvService, serviceName: string): Promise<Gene
                 reconnectOptions: {
                     reconnectEnabled: true,
                 },
-                listenerOptions: <ListenerOptions>{
+                listenerOptions: {
                     prefetchCount: envService.getVar('EXTERNAL_RABBIT_QUEUE_PREFETCH_COUNT', 'number', 1),
                 },
                 assertExchanges: process.env.EXTERNAL_RABBIT_ASSERT_EXCHANGES === 'true',
             },
         },
 
-        healthCheck: <HealthCheckConfig>{
+        healthCheck: {
             isEnabled: process.env.HEALTH_CHECK_IS_ENABLED === 'true',
             port: envService.getVar('HEALTH_CHECK_IS_PORT', 'number', 3000),
         },
 
-        metrics: <MetricsConfig>{
+        metrics: {
             moleculer: {
                 prometheus: {
                     isEnabled: envService.getVar('METRICS_MOLECULER_PROMETHEUS_IS_ENABLED', 'boolean', true),
@@ -147,7 +216,31 @@ export default async (envService: EnvService, serviceName: string): Promise<Gene
 
         cors: <CorsConfig>{
             // Configures the Access-Control-Allow-Origin CORS header.
-            origins: [`http://localhost:${PORT}/`, `http://127.0.0.1:${PORT}/`, 'https://api2oss.diia.gov.ua'],
+            origins: [
+                `http://localhost:${PORT}/`,
+                `http://127.0.0.1:${PORT}/`,
+                'https://api2t.diia.gov.ua/',
+                'https://api2s.diia.gov.ua/',
+                'https://api2oss.diia.gov.ua',
+                'https://dev-diia-nginx-1.diia-dev.local/',
+                'https://devops-diia-nginx-1.diia-dev.local/',
+                'http://api2t.stage.k8s/',
+                'http://api2s.acquirers.k8s:32081/',
+                'https://diia2sb.diia.gov.ua/',
+                'https://api.diia-dev.local/',
+                'http://diia-app-gateway-service.workspace/',
+                'http://diia-petition-portal.workspace/',
+                'https://diia-petition-portal.demo.ukrohost.com/',
+                'https://vzaemo.diia.gov.ua/',
+                'https://petition.diia.gov.ua/',
+                'https://api2.diia.gov.ua/',
+                'https://api3.diia.gov.ua/',
+                'https://api2dc.diia.gov.ua/',
+                'https://orktrack-landing.workspace/',
+                'https://orktrack-landing.demo.ukrohost.com/',
+                'https://map.evorog.gov.ua/',
+                'https://my2t.diia.gov.ua/',
+            ],
             // Configures the Access-Control-Allow-Methods CORS header.
             methods: [HttpMethod.GET, HttpMethod.OPTIONS, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE],
             // Configures the Access-Control-Allow-Headers CORS header.
@@ -195,8 +288,8 @@ export default async (envService: EnvService, serviceName: string): Promise<Gene
             secretKey: process.env.MINIO_SECRET_KEY,
         },
 
-        identifier: <IdentifierConfig>{
-            salt: process.env.SALT,
+        identifier: {
+            salt: envService.getVar('SALT'),
         },
 
         [MinAppVersionConfigType.MinAppVersion]: {
@@ -243,5 +336,5 @@ export default async (envService: EnvService, serviceName: string): Promise<Gene
             isEnabled: envService.getVar('USER_ACTIVITY_IN_ENABLED', 'boolean', true),
             ttl: envService.getVar('USER_ACTIVITY_TTL', 'number', DurationMs.Second * 30),
         },
-    }
+    } satisfies BaseConfig & Record<string, unknown>
 }

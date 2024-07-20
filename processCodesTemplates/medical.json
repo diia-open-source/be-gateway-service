@@ -1,0 +1,740 @@
+[
+    {
+        "processCode": 64101001,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Реєстр медичних даних — ЕСОЗ — захворів, його вже лікують 🍃. Спробуйте трохи пізніше.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64101002,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Реєстр — ДРАЦС — захворів, його вже лікують 🍃. Спробуйте трохи пізніше.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64101003,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Реєстр — ДМС — захворів, його вже лікують 🍃. Спробуйте трохи пізніше.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64101004,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Реєстр — ЄДДРС — захворів, його вже лікують 🍃. Спробуйте трохи пізніше.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111001,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "👍",
+                "title": "Медичні дані отримано",
+                "description": "Тепер можна переглянути усе в одному місці.",
+                "mainButton": {
+                    "name": "Продовжити",
+                    "action": "save_onboarding_read_mark"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111002,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "До 14 років розділ “Медичні дані не доступний”",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111003,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Ваш профіль було заблоковано або видалено з ЕСОЗ. За деталями необхідно звернутись в ЕСОЗ",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111004,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Не вдалося авторизуватися у системі ЕСОЗ. Будь ласка, спробуйте скористатися послугою пізніше.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111005,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Ваш профіль було заблоковано або видалено з ЕСОЗ. За деталями необхідно звернутись в ЕСОЗ",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111006,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "☝️",
+                "title": "Необхідні додаткові дії",
+                "description": "Оскільки медичні дані є чутливими, перегляд медичних даних вимагає повторне проходження Дія.Підпису.",
+                "mainButton": {
+                    "name": "Продовжити",
+                    "action": "registration_registration_place"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111007,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Скасувати заяву?",
+                "description": "Якщо скасуєте заяву, подати нову можна будь-коли.",
+                "mainButton": {
+                    "name": "Так, скасувати",
+                    "action": "cancel_application"
+                },
+                "alternativeButton": {
+                    "name": "Не скасовувати",
+                    "action": "skip"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111008,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "☝️",
+                "title": "Заяву скасовано",
+                "description": "Подати нову можна будь-коли.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "declaration_applications_list"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111009,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Неможливо скасувати заяву",
+                "description": "Заява вже опрацьована. Будь ласка. перевірте її статус.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "refresh"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111010,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Заява уже скасована",
+                "description": "Подати нову можна будь-коли.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "refresh"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111011,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Заяву скасовано лікарем",
+                "description": "Будь ласка, спробуйте подати нову заяву.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "refresh"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111012,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Неможливо скасувати заяву",
+                "description": "Профіль особи не верифіковано у ЕСОЗ. Будь ласка, зверніться до них для уточнення інформації.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "skip"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111013,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Неможливо скасувати заяву",
+                "description": "Заяву має скасувати особа, яка її подавала. (дитина або особа під опікою не можуть скасувати заяву самостійно)",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "skip"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111014,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😔",
+                "title": "Неможливо скасувати заяву",
+                "description": "Не вдалося визначити ваш звʼязок із особою, для якої укладається декларація. Зверніться в ЕСОЗ.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "refresh"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111015,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "☝️",
+                "title": "Необхідні додаткові дії",
+                "description": "Оскільки медичні дані є чутливими, перегляд медичних даних вимагає повторне проходження Дія.Підпису.",
+                "mainButton": {
+                    "name": "Продовжити",
+                    "action": "medical_auth",
+                    "resource": "<childId>"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64131018,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "☝️",
+                "title": "Потрібна згода",
+                "description": "Дії необхідно отримати згоду на пошук ваших даних у реєстрі ЕСОЗ",
+                "mainButton": {
+                    "name": "Продовжити",
+                    "action": "personal_data"
+                },
+                "alternativeButton": {
+                    "name": "Не надавати згоду",
+                    "action": "cancel"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111017,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "☝️",
+                "title": "Статус заяви змінено",
+                "description": "Перегляньте деталі",
+                "mainButton": {
+                    "name": "Продовжити",
+                    "action": "application"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111018,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "☝️",
+                "title": "Необхідні додаткові дії",
+                "description": "Оскільки медичні дані є чутливими, перегляд медичних даних вимагає повторне проходження Дія.Підпису.",
+                "mainButton": {
+                    "name": "Продовжити",
+                    "action": "medical_auth",
+                    "resource": "ward"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111019,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Особу було заблоковано або видалено з ЕСОЗ. За деталями необхідно звернутись в ЕСОЗ",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111020,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Вас не верифіковано на стороні ЕСОЗ. За деталями необхідно звернутись в ЕСОЗ",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111021,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Особу не верифіковано на стороні ЕСОЗ. За деталями необхідно звернутись в ЕСОЗ",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111022,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Неможливо укласти декларацію",
+                "description": "Наявні запити на зміну персональних даних в ЕСОЗ в прогресі. Спершу необхідно дочекатись відповіді щодо них.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111023,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Неможливо укласти декларацію",
+                "description": "Наявні запити на зміну персональних даних в ЕСОЗ в прогресі. Спершу необхідно дочекатись відповіді щодо них.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111024,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "☝",
+                "title": "Дані в оброці",
+                "description": "Ви вже маєте активні заяви в обробці. Ви можете подати нову, попередні буде автоматично скасовано.",
+                "mainButton": {
+                    "name": "Очікую обробку",
+                    "action": "publicServices"
+                },
+                "alternativeButton": {
+                    "name": "Створити нову заяву",
+                    "action": "division_choice"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111025,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "☝",
+                "title": "Дані в оброці",
+                "description": "Для даної особи вже є активні заяви в обробці. Ви можете подати нову, попередні буде автоматично скасовано.",
+                "mainButton": {
+                    "name": "Очікую обробку",
+                    "action": "publicServices"
+                },
+                "alternativeButton": {
+                    "name": "Створити нову заяву",
+                    "action": "division_choice"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111026,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Не вдалось зареєструвати заяву",
+                "description": "Заяву повинна подати довірена особа.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111027,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Не вдалось зареєструвати заяву",
+                "description": "Звʼязок між Вами і особою, для якої укладається декларація, не встановлено на стороні ЕСОЗ.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111028,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Не вдалось зареєструвати заяву",
+                "description": "Наявний запит на зміну персональних даних в ЕСОЗ у прогресі.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111029,
+        "template": {
+            "type": "middleCenterAlignAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Не вдалось зареєструвати заяву",
+                "description": "Наявний запит на зміну персональних даних для даної особи в ЕСОЗ у прогресі.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111030,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Не вдалось зареєструвати заяву",
+                "description": "Даний медичний заклад наразі недоступний.",
+                "mainButton": {
+                    "name": "Обрати інший",
+                    "action": "division_choice"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111031,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Не вдалось зареєструвати заяву",
+                "description": "Даний лікар наразі недоступний.",
+                "mainButton": {
+                    "name": "Обрати іншого",
+                    "action": "doctor_choise"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111032,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Не вдалось зареєструвати заяву",
+                "description": "Даний лікар наразі недоступний.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "application"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111033,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Надсилаємо заяву",
+                "description": "Дія надсилає заяву у ЕСОЗ. Ми сповістимо вас про результат.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "application"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64121001,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Невалідний номер вказаний як спосіб інформування. Вкажіть повторно коректний.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "auth_method"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64121002,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Усі спроби відправки sms використано. Спробуйте, будь ласка, згодом пізніше.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64121003,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "👌",
+                "title": "Вітаємо",
+                "description": "Ви внесли свої дані в ЕСОЗ.",
+                "mainButton": {
+                    "name": "Дякую",
+                    "action": "medicalServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64121004,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Реєстрація неуспішна",
+                "description": "Отримано помилку реєстрації Вас у ЕСОЗ",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64121005,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Невірний ОТП код...",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "otp"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64121006,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Не вдається завершити реєстрацію",
+                "description": "у вас невалідний РНОКПП",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64121007,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Не вдається завершити реєстрацію",
+                "description": "До 18 років неможливо зареєструватись у системі ЕСОЗ через Дію самостійно.",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64121008,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Ой, помилочка",
+                "description": "Немає документа підтвердження особи для завершення реєстрації",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    }
+]

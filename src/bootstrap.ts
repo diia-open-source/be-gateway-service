@@ -11,14 +11,14 @@ export async function bootstrap(serviceName: string): Promise<void> {
 
     await app.setConfig(configFactory)
 
-    app.setDeps(deps)
-    app.loadDepsFromFolder({ folderName: 'middlewares', nameFormatter: (name: string) => `${name}Middleware` })
+    await app.setDeps(deps)
+    await app.loadDepsFromFolder({ folderName: 'middlewares', nameFormatter: (name: string) => `${name}Middleware` })
 
-    const { config, deps: appDeps, start } = app.initialize()
+    const { config, start, container } = await app.initialize()
 
     await start()
 
     if (config.swagger.isEnabled) {
-        appDeps.openApiGenerator.generateOpenApiSchemas()
+        container.resolve('openApiGenerator').generateOpenApiSchemas()
     }
 }

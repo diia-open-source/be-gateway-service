@@ -1,7 +1,6 @@
 import DiiaLogger from '@diia-inhouse/diia-logger'
 import { CacheService } from '@diia-inhouse/redis'
 import { mockClass } from '@diia-inhouse/test'
-import { PublicServiceCode } from '@diia-inhouse/types'
 
 import PublicServiceDataMapper from '@src/dataMappers/publicServiceDataMapper'
 
@@ -21,7 +20,7 @@ describe(`Action ${GetPublicServicesAction.constructor.name}`, () => {
         it('should successfully return list of public services', async () => {
             const expectedResult: PublicServiceResponse[] = [
                 {
-                    code: PublicServiceCode.criminalRecordCertificate,
+                    code: 'criminal-record-certificate',
                     name: 'criminalRecordCertificate',
                     status: PublicServiceStatus.Active,
                 },

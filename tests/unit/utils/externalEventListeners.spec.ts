@@ -10,13 +10,14 @@ import { SetRequired } from 'type-fest'
 import { MoleculerService } from '@diia-inhouse/diia-app'
 
 import { AuthService } from '@diia-inhouse/crypto'
-import { EventBus, EventMessageHandler, ExternalEvent, ExternalEventBus, MessagePayload } from '@diia-inhouse/diia-queue'
+import { mongo } from '@diia-inhouse/db'
+import { EventBus, EventMessageHandler, ExternalEventBus, MessagePayload } from '@diia-inhouse/diia-queue'
 import { RabbitMQProvider } from '@diia-inhouse/diia-queue/dist/types/providers/rabbitmq'
 import { EnvService } from '@diia-inhouse/env'
 import { NotFoundError, ServiceUnavailableError } from '@diia-inhouse/errors'
 import { CacheService, StoreService } from '@diia-inhouse/redis'
 import TestKit, { mockClass } from '@diia-inhouse/test'
-import { ActionVersion, HttpMethod, Logger, PartnerAcquirersScope, PartnerScopeType, SessionType } from '@diia-inhouse/types'
+import { ActionVersion, HttpMethod, Logger, SessionType } from '@diia-inhouse/types'
 
 import AuthenticateMiddleware from '@src/middlewares/authenticate'
 import RoutesBuilder from '@src/routes'
@@ -32,7 +33,9 @@ import { generateUuid } from '@mocks/randomData'
 
 import { MessageError } from '@interfaces/externalEventListeners'
 import { ResponseError } from '@interfaces/index'
+import { ExternalEvent } from '@interfaces/queue'
 import { AppRoute } from '@interfaces/routes/appRoute'
+import { PartnerAcquirersScope, PartnerScopeType } from '@interfaces/routes/documentAcquirers'
 import { GetPartnerByTokenResult } from '@interfaces/services/partner'
 import { AppConfig } from '@interfaces/types/config'
 
@@ -86,7 +89,7 @@ describe('ExternalEventListenersUtils', () => {
                 ],
             }
             const partnerByTokenResult: GetPartnerByTokenResult = {
-                _id: id,
+                _id: id.toString(),
                 scopes,
             }
 
@@ -97,7 +100,10 @@ describe('ExternalEventListenersUtils', () => {
 
             expect(await externalEventListenersUtils.validatePartnerRoute(ExternalEvent.AcquirerDocumentResponse, partnerToken)).toEqual([
                 <SetRequired<AppRoute, 'action'>>route,
-                { partner: { _id: id, scopes, sessionType: SessionType.Partner, refreshToken: null }, sessionType: SessionType.Partner },
+                {
+                    partner: { _id: new mongo.ObjectId(id), scopes, sessionType: SessionType.Partner, refreshToken: null },
+                    sessionType: SessionType.Partner,
+                },
             ])
             expect(partnerServiceMock.getPartnerByToken).toHaveBeenCalledWith(partnerToken)
             expect(authenticateMiddlewareMock.getRouteAuthParams).toHaveBeenCalledWith(ActionVersion.V1, route.auth)

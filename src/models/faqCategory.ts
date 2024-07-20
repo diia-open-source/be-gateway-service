@@ -1,5 +1,4 @@
-import { Model, Schema, model, models } from 'mongoose'
-
+import { Model, Schema, model, models } from '@diia-inhouse/db'
 import { ProfileFeature, SessionType } from '@diia-inhouse/types'
 
 import { FaqCategory, FaqItem, FaqParameter, FaqParameterType } from '@interfaces/models/faqCategory'

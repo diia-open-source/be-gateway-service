@@ -44,7 +44,7 @@ export class FilesValidator {
     private static areFilesEmpty(files: File[], route: AppRoute): Error | undefined {
         const { required } = route.upload || {}
 
-        if (!files.length && required) {
+        if (files.length === 0 && required) {
             return new BadRequestError('The file is empty or exceeds file size')
         }
     }

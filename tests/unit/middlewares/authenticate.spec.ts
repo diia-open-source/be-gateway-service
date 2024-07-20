@@ -1,7 +1,9 @@
+import { randomUUID } from 'node:crypto'
+
 import { mock } from 'jest-mock-extended'
 
 import { AuthService } from '@diia-inhouse/crypto'
-import { EventBus, InternalEvent } from '@diia-inhouse/diia-queue'
+import { EventBus } from '@diia-inhouse/diia-queue'
 import { AccessDeniedError, BadRequestError, UnauthorizedError } from '@diia-inhouse/errors'
 import { CacheService, StoreService } from '@diia-inhouse/redis'
 import {
@@ -13,8 +15,6 @@ import {
     EResidentTokenData,
     HttpMethod,
     Logger,
-    PartnerPaymentScope,
-    PartnerScopeType,
     PortalUserPetitionPermissions,
     PortalUserPollPermissions,
     PortalUserTokenData,
@@ -36,7 +36,9 @@ import { generateUuid } from '@mocks/randomData'
 
 import { ActionCustomHeader, ProcessCode, Request, Response, RouteHeaderName, RouteHeaderRawName } from '@interfaces/index'
 import { ProfileFeatureExpression } from '@interfaces/profileFeature'
+import { InternalEvent } from '@interfaces/queue'
 import { AppRoute, RouteAuthParams } from '@interfaces/routes/appRoute'
+import { PartnerPaymentScope, PartnerScopeType } from '@interfaces/routes/payment'
 import { AppConfig } from '@interfaces/types/config'
 
 describe(`Service ${AuthenticateMiddleware.constructor.name}`, () => {
@@ -275,7 +277,7 @@ describe(`Service ${AuthenticateMiddleware.constructor.name}`, () => {
                         scopes: {
                             [PartnerScopeType.payment]: <PartnerPaymentScope[]>[PartnerPaymentScope.Debt],
                         },
-                        _id: mock(),
+                        _id: randomUUID(),
                     })
                 },
                 (): void => {
@@ -576,7 +578,7 @@ describe(`Service ${AuthenticateMiddleware.constructor.name}`, () => {
                         scopes: {
                             [PartnerScopeType.payment]: <PartnerPaymentScope[]>[PartnerPaymentScope.Debt],
                         },
-                        _id: mock(),
+                        _id: randomUUID(),
                     })
                 },
                 (): void => {

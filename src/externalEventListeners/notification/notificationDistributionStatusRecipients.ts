@@ -1,4 +1,4 @@
-import { EventBusListener, ExternalEvent, ExternalEventBus } from '@diia-inhouse/diia-queue'
+import { EventBusListener, ExternalEventBus } from '@diia-inhouse/diia-queue'
 import { ValidationError } from '@diia-inhouse/errors'
 import { ValidationSchema } from '@diia-inhouse/validators'
 
@@ -8,8 +8,9 @@ import ExternalEventListenersUtils from '@utils/externalEventListeners'
 
 import { MessagePayload } from '@interfaces/externalEventListeners'
 import { EventPayload } from '@interfaces/externalEventListeners/notification'
+import { ExternalEvent } from '@interfaces/queue'
 
-export default class NotificationDistributionCancelEventListener implements EventBusListener {
+export default class NotificationDistributionStatusRecipientsEventListener implements EventBusListener {
     constructor(
         private readonly externalEventListenersUtils: ExternalEventListenersUtils,
         private readonly notificationService: NotificationService,
@@ -17,7 +18,7 @@ export default class NotificationDistributionCancelEventListener implements Even
         private readonly externalEventBus: ExternalEventBus,
     ) {}
 
-    readonly event: ExternalEvent = ExternalEvent.NotificationDistributionCancel
+    readonly event: ExternalEvent = ExternalEvent.NotificationDistributionStatusRecipients
 
     readonly validationRules: ValidationSchema = {
         uuid: { type: 'string' },
@@ -44,8 +45,8 @@ export default class NotificationDistributionCancelEventListener implements Even
             const message: MessagePayload = { uuid, response }
 
             await this.externalEventBus.publish(event, message)
-        } catch (error) {
-            await this.externalEventListenersUtils.handleError(error, event, uuid)
+        } catch (err) {
+            await this.externalEventListenersUtils.handleError(err, event, uuid)
         }
     }
 }

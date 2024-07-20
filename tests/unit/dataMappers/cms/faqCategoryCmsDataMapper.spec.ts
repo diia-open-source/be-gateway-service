@@ -48,7 +48,7 @@ describe(`Mapper ${FaqCategoryCmsDataMapper.name}`, () => {
             },
             features: [
                 {
-                    value: ProfileFeature.office,
+                    value: ProfileFeature.student,
                 },
             ],
             createdAt: '2023-07-01T12:00:00Z',
@@ -78,7 +78,7 @@ describe(`Mapper ${FaqCategoryCmsDataMapper.name}`, () => {
                     ],
                 },
             ],
-            features: [ProfileFeature.office],
+            features: [ProfileFeature.student],
             order: 1,
         }
 

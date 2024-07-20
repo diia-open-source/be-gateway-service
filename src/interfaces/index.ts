@@ -1,9 +1,11 @@
-import { Span } from '@opentelemetry/api'
-import { Context } from 'moleculer'
+import type { Context } from 'moleculer'
 
-import { ExternalEvent } from '@diia-inhouse/diia-queue'
+import { Span } from '@diia-inhouse/diia-app'
+
 import { ErrorCode } from '@diia-inhouse/errors'
 import { ActionSession, ActionVersion, FileType, HttpMethod, PlatformType } from '@diia-inhouse/types'
+
+import { ExternalEvent } from '@interfaces/queue'
 
 export enum ProcessCode {
     AttestationNotPassed = 10101007,

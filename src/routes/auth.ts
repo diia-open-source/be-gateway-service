@@ -455,6 +455,23 @@ const routes: AppRoute[] = [
     },
     {
         method: HttpMethod.POST,
+        path: '/e-resident/api/:apiVersion/auth/applicant/token/refresh',
+        action: AuthActions.RefreshEResidentApplicantToken,
+        auth: [{ sessionType: SessionType.None, version: ActionVersion.V2 }],
+        headers: [
+            { name: RouteHeaderRawName.MOBILE_UID, versions: [ActionVersion.V2] },
+            { name: RouteHeaderRawName.APP_VERSION, versions: [ActionVersion.V2] },
+            { name: RouteHeaderRawName.PLATFORM_TYPE, versions: [ActionVersion.V2] },
+            { name: RouteHeaderRawName.TOKEN, versions: [ActionVersion.V2] },
+            { name: RouteHeaderRawName.PLATFORM_VERSION, versions: [ActionVersion.V2] },
+        ],
+        metadata: {
+            tags: ['Token'],
+        },
+    },
+
+    {
+        method: HttpMethod.POST,
         path: '/e-resident/api/:apiVersion/auth/token/logout',
         action: AuthActions.TokenEResidentLogout,
         auth: [{ sessionType: SessionType.None, version: ActionVersion.V2 }],

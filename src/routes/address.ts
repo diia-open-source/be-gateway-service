@@ -1,7 +1,8 @@
-import { ActionVersion, HttpMethod, PartnerMaintenanceScope, PartnerScopeType, SessionType } from '@diia-inhouse/types'
+import { ActionVersion, HttpMethod, SessionType } from '@diia-inhouse/types'
 
 import { RouteHeaderRawName } from '@interfaces/index'
 import { AppRoute } from '@interfaces/routes/appRoute'
+import { PartnerMaintenanceScope, PartnerScopeType } from '@interfaces/routes/partner'
 
 enum AddressActions {
     GetRegions = 'getRegions',

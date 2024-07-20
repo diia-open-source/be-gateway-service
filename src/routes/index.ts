@@ -1,14 +1,13 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-continue */
 
-import { AsyncLocalStorage } from 'async_hooks'
-import { randomUUID } from 'crypto'
-import { resolve as resolvePath } from 'path'
+import { AsyncLocalStorage } from 'node:async_hooks'
+import { randomUUID } from 'node:crypto'
+import path from 'node:path'
 
-import { listModules } from 'awilix'
+import { globSync } from 'glob'
 import { upperFirst } from 'lodash'
 
-import { ExternalEvent } from '@diia-inhouse/diia-queue'
 import { Env } from '@diia-inhouse/env'
 import { ActHeaders, ActionVersion, AlsData, Logger } from '@diia-inhouse/types'
 
@@ -20,10 +19,11 @@ import MultipartMiddleware from '@src/middlewares/multipart'
 import ProxyMiddleware from '@src/middlewares/proxy'
 import RedirectMiddleware from '@src/middlewares/redirect'
 
-import { CustomObject, Request, RequestParams, Response, RouteHeaderRawName } from '@interfaces/index'
+import { Request, RequestParams, Response, RouteHeaderRawName } from '@interfaces/index'
 import { Middleware, MiddlewareNext } from '@interfaces/middlewares'
+import { ExternalEvent } from '@interfaces/queue'
 import { BuildRoutesResult } from '@interfaces/routes'
-import { AppRoute, CustomHeader, RouteAuthParams } from '@interfaces/routes/appRoute'
+import { AppRoute, RouteAuthParams } from '@interfaces/routes/appRoute'
 
 export default class RoutesBuilder {
     readonly routeByExternalEventMap: Map<ExternalEvent, AppRoute> = new Map()
@@ -41,7 +41,7 @@ export default class RoutesBuilder {
         private readonly logger: Logger,
         private readonly asyncLocalStorage: AsyncLocalStorage<AlsData>,
     ) {
-        this.servicesRoutes = this.loadServicesRoutes()
+        this.servicesRoutes = this.loadServicesRoutes('dist/routes/**/*.js')
     }
 
     buildRoutes(): BuildRoutesResult {
@@ -61,14 +61,9 @@ export default class RoutesBuilder {
                 for (const authRouteVersion of versions) {
                     const middlewares: unknown[] = []
 
-                    middlewares.push(this.setServiceNameMiddleware(service))
-                    middlewares.push(this.initParams.bind(this))
-
+                    middlewares.push(this.setServiceNameMiddleware(service), this.initParams.bind(this))
                     this.addHeadersMiddlewares(route, middlewares)
-
-                    middlewares.push(this.authenticateMiddleware.isAuthenticated(route))
-
-                    middlewares.push(this.multipartMiddleware.parse)
+                    middlewares.push(this.authenticateMiddleware.isAuthenticated(route), this.multipartMiddleware.parse)
 
                     if (route.upload) {
                         if (route.upload?.multiple) {
@@ -110,64 +105,83 @@ export default class RoutesBuilder {
         return result
     }
 
-    private loadServicesRoutes(): Record<string, AppRoute[]> {
-        const routes = listModules('dist/routes/*.js')
+    private loadServicesRoutes(rootPath: string): Record<string, AppRoute[]> {
+        const routes = globSync(rootPath)
 
-        const loadedRoutes = routes.reduce((acc, module) => {
-            const { name, path: modulePath } = module
+        // eslint-disable-next-line unicorn/no-array-reduce
+        return routes.reduce(
+            (acc, relativeFilePath) => {
+                const absoluteFilePath = path.resolve(relativeFilePath)
 
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const serviceRoutes = require(resolvePath(modulePath)).default
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                const loadedRoutesFromFile = require(absoluteFilePath).default
+                const { dir: serviceDirectory, name: fileNameWithoutExtension } = path.parse(relativeFilePath)
+                const serviceName = serviceDirectory.split(path.sep)[2]
+                const upperFirstServiceName = upperFirst(serviceName || fileNameWithoutExtension)
 
-            return {
-                ...acc,
-                ...(serviceRoutes && Array.isArray(serviceRoutes) && serviceRoutes.length && { [upperFirst(name)]: serviceRoutes }),
-            }
-        }, {})
-
-        return loadedRoutes
+                return {
+                    ...acc,
+                    ...(loadedRoutesFromFile &&
+                        Array.isArray(loadedRoutesFromFile) &&
+                        loadedRoutesFromFile.length > 0 && {
+                            [upperFirstServiceName]: [...(acc[upperFirstServiceName] || []), ...loadedRoutesFromFile],
+                        }),
+                }
+            },
+            <Record<string, AppRoute[]>>{},
+        )
     }
 
     private addHeadersMiddlewares(route: AppRoute, middlewares: unknown[]): void {
         middlewares.push(this.headerMiddleware.setAcceptLanguageHeader)
 
-        if (!route.headers || !route.headers.length) {
+        if (!route.headers || route.headers.length === 0) {
             return
         }
 
-        route.headers.forEach((header: CustomHeader) => {
+        for (const header of route.headers) {
             switch (header.name) {
-                case RouteHeaderRawName.MOBILE_UID:
+                case RouteHeaderRawName.MOBILE_UID: {
                     middlewares.push(this.headerMiddleware.addMobileUidHeader(header))
                     break
-                case RouteHeaderRawName.TOKEN:
+                }
+                case RouteHeaderRawName.TOKEN: {
                     middlewares.push(this.headerMiddleware.addTokenHeader())
                     break
-                case RouteHeaderRawName.APP_VERSION:
+                }
+                case RouteHeaderRawName.APP_VERSION: {
                     middlewares.push(this.headerMiddleware.addAppVersionHeader(header))
                     break
-                case RouteHeaderRawName.PLATFORM_TYPE:
+                }
+                case RouteHeaderRawName.PLATFORM_TYPE: {
                     middlewares.push(this.headerMiddleware.addPlatformTypeHeader(header))
                     break
-                case RouteHeaderRawName.PLATFORM_VERSION:
+                }
+                case RouteHeaderRawName.PLATFORM_VERSION: {
                     middlewares.push(this.headerMiddleware.addPlatformVersionHeader(header))
                     break
-                case RouteHeaderRawName.TICKET:
+                }
+                case RouteHeaderRawName.TICKET: {
                     middlewares.push(this.headerMiddleware.addTicketHeader(header))
                     break
-                case RouteHeaderRawName.CHANNEL_UUID:
+                }
+                case RouteHeaderRawName.CHANNEL_UUID: {
                     middlewares.push(this.headerMiddleware.addChannelUuidHeader(header))
                     break
-                case RouteHeaderRawName.APP_PARTNER_ID:
+                }
+                case RouteHeaderRawName.APP_PARTNER_ID: {
                     middlewares.push(this.headerMiddleware.addDiiaPartnerIdHeader(header))
                     break
-                case RouteHeaderRawName.DOCUMENT_REQUEST_TRACE_ID:
+                }
+                case RouteHeaderRawName.DOCUMENT_REQUEST_TRACE_ID: {
                     middlewares.push(this.headerMiddleware.addDocumentRequestTraceIdHeader(header))
                     break
-                default:
+                }
+                default: {
                     this.logger.debug(`Header [${header.name}] middleware not implemented`)
+                }
             }
-        })
+        }
     }
 
     private setServiceNameMiddleware(serviceName: string): Middleware {
@@ -203,14 +217,10 @@ export default class RoutesBuilder {
         return function mergeParams(req: Request, _res: Response, next: MiddlewareNext): void {
             const { body, query, headers, session } = req.$params
 
-            let params: CustomObject
-
-            if (typeof route.mergeParams === 'undefined' || route.mergeParams) {
-                // Merge params
-                params = Object.assign(req.$params.params || {}, body, query)
-            } else {
-                params = { body, query, params: req.$params.params }
-            }
+            const params =
+                route.mergeParams === undefined || route.mergeParams
+                    ? Object.assign(req.$params.params || {}, body, query)
+                    : { body, query, params: req.$params.params }
 
             req.$params = <RequestParams>{ params, session, headers }
 

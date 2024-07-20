@@ -327,6 +327,7 @@ describe('ProxyMiddleware', () => {
             }
             const next = jest.fn()
 
+            // eslint-disable-next-line unicorn/no-useless-undefined
             mockedAxios.request.mockResolvedValueOnce(undefined)
 
             await middleware.addRedirect({ serviceId: 'example-service' })(req, res, next)
@@ -445,7 +446,7 @@ describe('ProxyMiddleware', () => {
             await middleware.addRedirect({ serviceId: 'service1' })(mockReq, mockRes, next)
 
             expect(mockRes.writeHead).toHaveBeenCalledWith(HttpStatusCode.INTERNAL_SERVER_ERROR)
-            expect(mockRes.end).toHaveBeenCalled()
+            expect(mockRes.end).toHaveBeenCalledWith(expect.stringMatching(/JSON at position 1/))
         })
 
         it.each([
@@ -469,6 +470,7 @@ describe('ProxyMiddleware', () => {
                 },
                 '{"result":"Success"}',
                 (): void => {
+                    // eslint-disable-next-line unicorn/no-useless-undefined
                     jest.spyOn(processDataService, 'getProcessData').mockReturnValueOnce(undefined)
                 },
                 HttpStatusCode.OK,
@@ -481,6 +483,26 @@ describe('ProxyMiddleware', () => {
                     data: '{"result":"Success","processCode":"987654321"}',
                 },
                 '{"result":"Success","processCode":987654321,"template":{"type":"middleCenterAlignAlert","isClosable":false,"data":{"icon":"☝","title":"title","description":"description"}}}',
+                (): void => {
+                    jest.spyOn(processDataService, 'getProcessData').mockReturnValueOnce({
+                        processCode: 987654321,
+                        template: {
+                            type: 'middleCenterAlignAlert',
+                            isClosable: false,
+                            data: { icon: '☝', title: 'title', description: 'description' },
+                        },
+                    })
+                },
+                HttpStatusCode.OK,
+            ],
+            [
+                'content-type: application/json header and valid processCode and $processDataParams in data and statusCode >= HttpStatusCode.BAD_REQUEST',
+                {
+                    status: HttpStatusCode.BAD_REQUEST,
+                    headers: { 'content-type': 'application/json' },
+                    data: '{"result":"Success","processCode":"987654321", "message": "error"}',
+                },
+                '{"processCode":987654321,"template":{"type":"middleCenterAlignAlert","isClosable":false,"data":{"icon":"☝","title":"title","description":"description"}}}',
                 (): void => {
                     jest.spyOn(processDataService, 'getProcessData').mockReturnValueOnce({
                         processCode: 987654321,

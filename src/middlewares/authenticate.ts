@@ -1,7 +1,7 @@
 import pTimeout from 'p-timeout'
 
 import { AuthService as AuthCryptoService } from '@diia-inhouse/crypto'
-import { EventBus, InternalEvent } from '@diia-inhouse/diia-queue'
+import { EventBus } from '@diia-inhouse/diia-queue'
 import { AccessDeniedError, BadRequestError, UnauthorizedError } from '@diia-inhouse/errors'
 import { CacheService, StoreService } from '@diia-inhouse/redis'
 import {
@@ -14,7 +14,6 @@ import {
     EResidentSession,
     EResidentTokenData,
     Logger,
-    PartnerScopes,
     PartnerTokenData,
     PortalUserTokenData,
     RefreshToken,
@@ -36,7 +35,9 @@ import Utils from '@utils/index'
 import { ActionCustomHeader, ProcessCode, Request, Response, RouteHeaderName, RouteHeaderRawName } from '@interfaces/index'
 import { Middleware, MiddlewareNext } from '@interfaces/middlewares'
 import { ProfileFeatureExpression } from '@interfaces/profileFeature'
+import { InternalEvent } from '@interfaces/queue'
 import { AppRoute, GatewayUserActivityEventPayload, RouteAuthParams } from '@interfaces/routes/appRoute'
+import { PartnerScopes } from '@interfaces/services/partner'
 import { AppConfig } from '@interfaces/types/config'
 
 export default class AuthenticateMiddleware {
@@ -62,9 +63,8 @@ export default class AuthenticateMiddleware {
         const { auth, profileFeaturesExpression } = route
 
         return async (req: Request, _res: Response, next: MiddlewareNext): Promise<void> => {
-            const {
-                $params: { headers },
-            } = req
+            const { $params } = req
+            const { headers } = $params
 
             const actionVersion = headers[ActionCustomHeader.ACTION_VERSION]
             const routeAuthParams = this.getRouteAuthParams(actionVersion, auth)
@@ -79,11 +79,11 @@ export default class AuthenticateMiddleware {
             let err: Error | null = null
 
             try {
-                if (!sessionTypes.length) {
+                if (sessionTypes.length === 0) {
                     throw new BadRequestError('Unknown session type')
                 }
 
-                if (routeSessionType && routeSessionTypes.length) {
+                if (routeSessionType && routeSessionTypes.length > 0) {
                     throw new BadRequestError('Wrong session types configuration')
                 }
 
@@ -96,7 +96,7 @@ export default class AuthenticateMiddleware {
 
                 const mobileUid = headers[RouteHeaderName.MOBILE_UID]
 
-                req.$params.session = await this.createSession(
+                $params.session = await this.createSession(
                     routeAuthParams,
                     sessionTypes,
                     authToken,
@@ -104,10 +104,10 @@ export default class AuthenticateMiddleware {
                     appPartnerId,
                     profileFeaturesExpression,
                 )
-            } catch (e) {
-                if (Utils.isError(e)) {
-                    err = e
-                    this.logger.error(e.message, { err: e, route })
+            } catch (err_) {
+                if (Utils.isError(err_)) {
+                    err = err_
+                    this.logger.error(err_.message, { err: err_, route })
                 }
             }
 
@@ -146,13 +146,15 @@ export default class AuthenticateMiddleware {
     }
 
     validateScopes(scopes: PartnerScopes, targetScopes: PartnerScopes): void | never {
-        Object.entries(scopes).forEach(([scopeType, scope]) => {
+        for (const [scopeType, scope] of Object.entries(scopes)) {
             if (!scope?.length) {
-                return
+                continue
             }
 
-            scope.forEach((requiredScope: string) => this.validateScope(targetScopes?.[<keyof PartnerScopes>scopeType], requiredScope))
-        })
+            for (const requiredScope of scope) {
+                this.validateScope(targetScopes?.[<keyof PartnerScopes>scopeType], requiredScope)
+            }
+        }
     }
 
     private async createSession(
@@ -263,13 +265,13 @@ export default class AuthenticateMiddleware {
         }
 
         const userTokenData = <VerifiedBaseTokenData<UserTokenData>>tokenData
-        const { refreshToken, identifier: userIdentifier } = userTokenData
+        const { refreshToken, identifier: userIdentifier, itn } = userTokenData
 
         if (!skipJwtVerification) {
             await this.checkRefreshToken(refreshToken, sessionType)
         }
 
-        this.verifyIfItnAccessIsBlocked(userTokenData.itn, authParams)
+        this.verifyIfItnAccessIsBlocked(itn, authParams)
 
         await this.publishUserActivity(userIdentifier, mobileUid)
 
@@ -288,13 +290,13 @@ export default class AuthenticateMiddleware {
         const sessionType = SessionType.CabinetUser
         const { skipJwtVerification } = authParams
         const cabinetUserTokenData = <VerifiedBaseTokenData<CabinetUserTokenData>>tokenData
-        const { refreshToken, identifier: userIdentifier } = cabinetUserTokenData
+        const { refreshToken, identifier: userIdentifier, itn } = cabinetUserTokenData
 
         if (!skipJwtVerification) {
             await this.checkRefreshToken(refreshToken, sessionType)
         }
 
-        this.verifyIfItnAccessIsBlocked(cabinetUserTokenData.itn, authParams)
+        this.verifyIfItnAccessIsBlocked(itn, authParams)
 
         await this.publishUserActivity(userIdentifier, mobileUid)
 
@@ -314,13 +316,13 @@ export default class AuthenticateMiddleware {
         authParams: RouteAuthParams,
     ): Promise<EResidentSession> {
         const { skipJwtVerification } = authParams
-        const { refreshToken } = tokenData
+        const { refreshToken, identifier } = tokenData
 
         if (!skipJwtVerification) {
             await this.checkRefreshToken(refreshToken, sessionType)
         }
 
-        await this.publishUserActivity(tokenData.identifier, mobileUid)
+        await this.publishUserActivity(identifier, mobileUid)
 
         return { sessionType, user: tokenData }
     }
@@ -328,10 +330,8 @@ export default class AuthenticateMiddleware {
     private verifyIfItnAccessIsBlocked(itn: string, authParams: RouteAuthParams): void {
         const { blockAccess } = authParams
         const routeAccessBlockItns = this.config.routeAccess.blockItns
-        if (routeAccessBlockItns.length && (typeof blockAccess === 'undefined' || blockAccess === true)) {
-            if (routeAccessBlockItns.includes(itn)) {
-                throw new AccessDeniedError()
-            }
+        if (routeAccessBlockItns.length > 0 && (blockAccess === undefined || blockAccess === true) && routeAccessBlockItns.includes(itn)) {
+            throw new AccessDeniedError()
         }
     }
 
@@ -351,7 +351,9 @@ export default class AuthenticateMiddleware {
         appPartnerId: string | undefined,
     ): Promise<TokenData> | null {
         if (appPartnerId) {
-            return this.assemblePartnerTokenData(appPartnerId)
+            const partnerTokenDataPromise = this.assemblePartnerTokenData(appPartnerId)
+
+            return <Promise<TokenData>>(<unknown>partnerTokenDataPromise)
         }
 
         if (!token && sessionTypes.includes(SessionType.None)) {
@@ -365,9 +367,9 @@ export default class AuthenticateMiddleware {
         return this.auth.validate(token, sessionTypes, mobileUid, skipJwtVerification)
     }
 
-    private async assemblePartnerTokenData(partnerIdToken: string): Promise<PartnerTokenData> {
+    private async assemblePartnerTokenData(partnerIdToken: string): Promise<PartnerTokenData<string>> {
         const { _id: id, scopes } = await this.partnerService.getPartnerByToken(partnerIdToken)
-        const tokenData: PartnerTokenData = {
+        const tokenData: PartnerTokenData<string> = {
             _id: id,
             scopes,
             sessionType: SessionType.Partner,
@@ -466,6 +468,7 @@ export default class AuthenticateMiddleware {
 
         try {
             const profileFeatures = await this.userService.getUserProfileFeatures(userIdentifier, profileFeatureExpression.features)
+            // eslint-disable-next-line unicorn/prefer-regexp-test
             if (!profileFeatureExpression.match((feature) => feature in profileFeatures)) {
                 throw new AccessDeniedError()
             }
