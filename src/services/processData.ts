@@ -7,7 +7,7 @@ import { ActionSession, OnInit } from '@diia-inhouse/types'
 
 import Utils from '@utils/index'
 
-import { ProcessData } from '@interfaces/services/processData'
+import { ProcessData, ProcessDataParams } from '@interfaces/services/processData'
 import { AppConfig } from '@interfaces/types/config'
 
 export default class ProcessDataService implements OnInit {
@@ -37,49 +37,51 @@ export default class ProcessDataService implements OnInit {
 
     getProcessData(
         processCode: number,
-        $processDataParams: Record<string, string> | undefined,
+        processDataParams: ProcessDataParams | undefined,
         session: ActionSession | undefined,
         endpointPath: string | undefined,
     ): ProcessData | undefined {
         const eResidentProcessData = this.getEResidentProcessDataIfExists(processCode, session, endpointPath)
         if (eResidentProcessData) {
-            return eResidentProcessData
+            return this.enrichProcessData(eResidentProcessData, processDataParams)
         }
 
         const cabinetProcessData = this.getCabinetProcessDataIfExists(processCode, session, endpointPath)
         if (cabinetProcessData) {
-            return cabinetProcessData
+            return this.enrichProcessData(cabinetProcessData, processDataParams)
         }
 
-        const templateData = this.processCodeDataMap.get(processCode)
-        if (!templateData) {
-            return undefined
+        const processData = this.getProcessDataIfExists(processCode)
+        if (processData) {
+            return this.enrichProcessData(processData, processDataParams)
         }
-
-        if ($processDataParams) {
-            const templateDataCopy = structuredClone(templateData)
-            const {
-                template: { data },
-            } = templateDataCopy
-
-            if (data.title) {
-                data.title = this.handlePlaceholders(data.title, $processDataParams)
-            }
-
-            if (data.description) {
-                data.description = this.handlePlaceholders(data.description, $processDataParams)
-            }
-
-            return templateDataCopy
-        }
-
-        return templateData
     }
 
-    private handlePlaceholders(sourceString: string, templates: Record<string, string>): string {
+    private enrichProcessData(processData: ProcessData, processDataParams: ProcessDataParams = {}): ProcessData {
+        const { template } = processData
+        const { templateParams, resource } = processDataParams
+
+        if (templateParams) {
+            if (template.data.title) {
+                template.data.title = this.handlePlaceholders(template.data.title, templateParams)
+            }
+
+            if (template.data.description) {
+                template.data.description = this.handlePlaceholders(template.data.description, templateParams)
+            }
+        }
+
+        if (resource && template.data.mainButton) {
+            template.data.mainButton.resource = resource
+        }
+
+        return processData
+    }
+
+    private handlePlaceholders(sourceString: string, templateParams: Record<string, string>): string {
         let resultString = sourceString
 
-        for (const [placeholder, value] of Object.entries(templates)) {
+        for (const [placeholder, value] of Object.entries(templateParams)) {
             resultString = resultString.replaceAll(new RegExp(`\\{${placeholder}\\}`, 'g'), value)
         }
 
@@ -127,6 +129,10 @@ export default class ProcessDataService implements OnInit {
         return loadedProcessCodesData
     }
 
+    private getProcessDataIfExists(processCode: number): ProcessData | undefined {
+        return structuredClone(this.processCodeDataMap.get(processCode))
+    }
+
     private getEResidentProcessDataIfExists(
         processCode: number,
         session: ActionSession | undefined,
@@ -136,7 +142,7 @@ export default class ProcessDataService implements OnInit {
         if (isEResident) {
             const eResidentProcessCode = Number.parseInt(`1${processCode}`, 10)
 
-            return this.eResidentProcessCodeDataMap.get(eResidentProcessCode)
+            return structuredClone(this.eResidentProcessCodeDataMap.get(eResidentProcessCode))
         }
     }
 
@@ -149,7 +155,7 @@ export default class ProcessDataService implements OnInit {
         if (isCabinetUser) {
             const cabinetProcessCode = Number.parseInt(`2${processCode}`, 10)
 
-            return this.cabinetProcessCodeDataMap.get(cabinetProcessCode)
+            return structuredClone(this.cabinetProcessCodeDataMap.get(cabinetProcessCode))
         }
     }
 }

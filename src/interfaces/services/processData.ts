@@ -11,6 +11,7 @@ export interface ProcessData {
 export interface TemplateButton {
     name: string
     action: string
+    resource?: string
 }
 
 export interface TemplateData {
@@ -19,4 +20,9 @@ export interface TemplateData {
     description: string
     mainButton?: TemplateButton
     alternativeButton?: TemplateButton
+}
+
+export interface ProcessDataParams {
+    templateParams?: Record<string, string>
+    resource?: string
 }

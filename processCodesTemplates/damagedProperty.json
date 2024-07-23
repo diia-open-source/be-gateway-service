@@ -11,7 +11,8 @@
                 "mainButton": {
                     "name": "Знайти ЦНАП",
                     "action": "externalLink",
-                    "link": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2"
+                    "link": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2",
+                    "resource": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2"
                 },
                 "alternativeButton": {
                     "name": "До списку нерухомості",
@@ -32,7 +33,8 @@
                 "mainButton": {
                     "name": "Знайти ЦНАП",
                     "action": "externalLink",
-                    "link": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2"
+                    "link": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2",
+                    "resource": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2"
                 },
                 "alternativeButton": {
                     "name": "До списку нерухомості",
@@ -137,7 +139,8 @@
                 "mainButton": {
                     "name": "Знайти ЦНАП",
                     "action": "externalLink",
-                    "link": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2"
+                    "link": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2",
+                    "resource": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2"
                 },
                 "alternativeButton": {
                     "name": "До списку нерухомості",
@@ -190,7 +193,8 @@
                 "mainButton": {
                     "name": "Портал Дія",
                     "action": "externalLink",
-                    "link": "https://diia.gov.ua/services/derzhavna-reyestaciya-prav-na-neruhome-majno"
+                    "link": "https://diia.gov.ua/services/derzhavna-reyestaciya-prav-na-neruhome-majno",
+                    "resource": "https://diia.gov.ua/services/derzhavna-reyestaciya-prav-na-neruhome-majno"
                 },
                 "alternativeButton": {
                     "name": "До списку нерухомості",
@@ -211,7 +215,8 @@
                 "mainButton": {
                     "name": "Знайти ЦНАП",
                     "action": "externalLink",
-                    "link": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2"
+                    "link": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2",
+                    "resource": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2"
                 },
                 "alternativeButton": {
                     "name": "До списку нерухомості",
@@ -352,7 +357,8 @@
                 "mainButton": {
                     "name": "Знайти ЦНАП",
                     "action": "externalLink",
-                    "link": "https://minjust.gov.ua/pages/list_of_state_registrars_and_officials_ministry_of_justice"
+                    "link": "https://minjust.gov.ua/pages/list_of_state_registrars_and_officials_ministry_of_justice",
+                    "resource": "https://minjust.gov.ua/pages/list_of_state_registrars_and_officials_ministry_of_justice"
                 },
                 "alternativeButton": {
                     "name": "До списку нерухомості",
@@ -453,7 +459,8 @@
                 "mainButton": {
                     "name": "Знайти ЦНАП",
                     "action": "externalLink",
-                    "link": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2"
+                    "link": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2",
+                    "resource": "https://center.diia.gov.ua/mapa-centriv-so-pracuut-pid-cas-vijni-2"
                 },
                 "alternativeButton": {
                     "name": "До списку нерухомості",
@@ -694,7 +701,7 @@
             "data": {
                 "icon": "😔",
                 "title": "Повертайтесь пізніше",
-                "description": "Неможливо перевірити дані. Реєстр пошкодженого та зруйнованого майна захворів, його вже лікують 🍃 Спробуйте, будь ласка, пізніше.\n\nВажливо: перед повторною спробою запросіть нове посилання в заявника.",
+                "description": "Неможливо перевірити дані. На жаль, послуга тимчасово недоступна. Реєстр пошкодженого та знищеного майна оновлюється. Повертайтеся трохи пізніше. \n\nВажливо: перед повторною спробою запросіть нове посилання в заявника.",
                 "mainButton": {
                     "name": "Зрозуміло",
                     "action": "cancel"
@@ -1618,7 +1625,7 @@
             "data": {
                 "icon": "😔",
                 "title": "Сталася помилка",
-                "description": "На жаль, послуга тимчасово недоступна. Реєстр зруйнованого та пошкодженого майна оновлюється. Повертайтеся трохи пізніше.",
+                "description": "На жаль, послуга тимчасово недоступна. Реєстр пошкодженого та знищеного майна оновлюється. Повертайтеся трохи пізніше.",
                 "mainButton": {
                     "name": "Зрозуміло",
                     "action": "publicServices"
@@ -1650,7 +1657,7 @@
             "data": {
                 "icon": "😔",
                 "title": "На жаль, сталася помилка",
-                "description": "На жаль, реєстр пошкодженого та зруйнованого майна тимчасово не працює. Спробуйте повторно завантажити документ пізніше.",
+                "description": "На жаль, Реєстр пошкодженого та знищеного майна тимчасово не працює. Спробуйте повторно завантажити документ пізніше.",
                 "mainButton": {
                     "name": "Зрозуміло",
                     "action": "publicServices"

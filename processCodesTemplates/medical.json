@@ -170,7 +170,9 @@
                 "description": "Якщо скасуєте заяву, подати нову можна будь-коли.",
                 "mainButton": {
                     "name": "Так, скасувати",
-                    "action": "cancel_application"
+                    "action": "cancel_application",
+                    "resource": "<aplicationId>",
+                    "subresource": "<personId>"
                 },
                 "alternativeButton": {
                     "name": "Не скасовувати",
@@ -309,7 +311,7 @@
         }
     },
     {
-        "processCode": 64131018,
+        "processCode": 64111016,
         "template": {
             "type": "middleCenterBlackButtonAlert",
             "isClosable": false,
@@ -319,11 +321,8 @@
                 "description": "Дії необхідно отримати згоду на пошук ваших даних у реєстрі ЕСОЗ",
                 "mainButton": {
                     "name": "Продовжити",
-                    "action": "personal_data"
-                },
-                "alternativeButton": {
-                    "name": "Не надавати згоду",
-                    "action": "cancel"
+                    "action": "personal_data",
+                    "resource": "123"
                 }
             }
         }
@@ -339,7 +338,9 @@
                 "description": "Перегляньте деталі",
                 "mainButton": {
                     "name": "Продовжити",
-                    "action": "application"
+                    "action": "application",
+                    "resource": "<applicationId>",
+                    "subresource": "<64111017>"
                 }
             }
         }
@@ -572,7 +573,7 @@
                 "description": "Даний лікар наразі недоступний.",
                 "mainButton": {
                     "name": "Обрати іншого",
-                    "action": "doctor_choise"
+                    "action": "doctor_choice"
                 }
             }
         }
@@ -588,7 +589,9 @@
                 "description": "Даний лікар наразі недоступний.",
                 "mainButton": {
                     "name": "Зрозуміло",
-                    "action": "application"
+                    "action": "application",
+                    "resource": "<applicationId>",
+                    "subresource": "<64111017>"
                 }
             }
         }
@@ -604,7 +607,25 @@
                 "description": "Дія надсилає заяву у ЕСОЗ. Ми сповістимо вас про результат.",
                 "mainButton": {
                     "name": "Зрозуміло",
-                    "action": "application"
+                    "action": "application",
+                    "resource": "<applicationId>",
+                    "subresource": "<64111017>"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64111034,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "👍",
+                "title": "Медичні дані отримано",
+                "description": "Тепер можна переглянути усе в одному місці.",
+                "mainButton": {
+                    "name": "Продовжити",
+                    "action": "medical_service_category"
                 }
             }
         }
@@ -733,6 +754,42 @@
                 "mainButton": {
                     "name": "Зрозуміло",
                     "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64131010,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "😞",
+                "title": "Зміна неуспішна",
+                "description": "Отримано помилку зміни способу інформування в ЕСОЗ",
+                "mainButton": {
+                    "name": "Зрозуміло",
+                    "action": "publicServices"
+                }
+            }
+        }
+    },
+    {
+        "processCode": 64131018,
+        "template": {
+            "type": "middleCenterBlackButtonAlert",
+            "isClosable": false,
+            "data": {
+                "icon": "☝️",
+                "title": "Потрібна згода",
+                "description": "Дії необхідно отримати згоду на пошук ваших даних у реєстрі ЕСОЗ",
+                "mainButton": {
+                    "name": "Продовжити",
+                    "action": "personal_data"
+                },
+                "alternativeButton": {
+                    "name": "Не надавати згоду",
+                    "action": "cancel"
                 }
             }
         }

@@ -212,14 +212,21 @@ export default (
                 }
 
                 if (data?.processCode) {
-                    const { processCode, $processDataParams } = data
-                    const processData = processDataService.getProcessData(processCode, $processDataParams, session, parsedUrl)
+                    const { processCode, opProcessDataParams: processDataParams, $processDataParams: templateParams } = data
+
+                    const processData = processDataService.getProcessData(
+                        processCode,
+                        processDataParams || { templateParams },
+                        session,
+                        parsedUrl,
+                    )
 
                     if (processData) {
                         Object.assign(data, processData)
                     } else {
                         delete data.processCode
                         delete data.$processDataParams
+                        delete data.opProcessDataParams
                     }
                 }
 
@@ -286,12 +293,15 @@ export default (
 
                     res.setHeader('Content-Type', 'application/json; charset=utf-8')
                     if (err.data?.processCode) {
-                        const { processCode, $processDataParams, code } = err.data
+                        const { processCode, opProcessDataParams: processDataParams, $processDataParams: templateParams, code } = err.data
+
                         if (Utils.isErrorCode(processCode)) {
                             err.code = HttpStatusCode.BAD_REQUEST
                             err.errorCode = processCode
+
                             delete err.data.processCode
                             delete err.data.$processDataParams
+                            delete err.data.opProcessDataParams
 
                             const template = await errorTemplateService.fetchErrorTemplateByCode(processCode, $params?.session, parsedUrl)
                             if (template) {
@@ -304,7 +314,7 @@ export default (
                         } else {
                             const processData = processDataService.getProcessData(
                                 processCode,
-                                $processDataParams,
+                                processDataParams || { templateParams },
                                 $params?.session,
                                 parsedUrl,
                             )

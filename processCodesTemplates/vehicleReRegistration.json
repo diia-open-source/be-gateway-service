@@ -27,7 +27,8 @@
                 "mainButton": {
                     "name": "Записатися до СЦ",
                     "action": "vehicleReRegistration/externalLink",
-                    "link": "https://eq.hsc.gov.ua/"
+                    "link": "https://eq.hsc.gov.ua/",
+                    "resource": "https://eq.hsc.gov.ua/"
                 },
                 "alternativeButton": {
                     "name": "Запишуся пізніше",
@@ -84,7 +85,8 @@
                 "mainButton": {
                     "name": "Записатися до СЦ",
                     "action": "vehicleReRegistration/externalLink",
-                    "link": "https://eq.hsc.gov.ua/"
+                    "link": "https://eq.hsc.gov.ua/",
+                    "resource": "https://eq.hsc.gov.ua/"
                 },
                 "alternativeButton": {
                     "name": "Запишуся пізніше",
@@ -157,7 +159,8 @@
                 "mainButton": {
                     "name": "Записатися до СЦ",
                     "action": "vehicleReRegistration/externalLink",
-                    "link": "https://eq.hsc.gov.ua/"
+                    "link": "https://eq.hsc.gov.ua/",
+                    "resource": "https://eq.hsc.gov.ua/"
                 },
                 "alternativeButton": {
                     "name": "Запишуся пізніше",
@@ -178,7 +181,8 @@
                 "mainButton": {
                     "name": "Записатися до СЦ",
                     "action": "vehicleReRegistration/externalLink",
-                    "link": "https://eq.hsc.gov.ua/"
+                    "link": "https://eq.hsc.gov.ua/",
+                    "resource": "https://eq.hsc.gov.ua/"
                 },
                 "alternativeButton": {
                     "name": "Запишуся пізніше",
@@ -199,7 +203,8 @@
                 "mainButton": {
                     "name": "Записатися до СЦ",
                     "action": "vehicleReRegistration/externalLink",
-                    "link": "https://eq.hsc.gov.ua/"
+                    "link": "https://eq.hsc.gov.ua/",
+                    "resource": "https://eq.hsc.gov.ua/"
                 },
                 "alternativeButton": {
                     "name": "Запишуся пізніше",
@@ -520,7 +525,8 @@
                 "mainButton": {
                     "name": "Знайти орган реєстрації",
                     "action": "vehicleReRegistration/externalLink",
-                    "link": "https://dmsu.gov.ua/services/regauth.html"
+                    "link": "https://dmsu.gov.ua/services/regauth.html",
+                    "resource": "https://dmsu.gov.ua/services/regauth.html"
                 },
                 "alternativeButton": {
                     "name": "Оновлю пізніше",

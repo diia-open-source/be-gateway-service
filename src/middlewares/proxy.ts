@@ -184,11 +184,12 @@ export default class ProxyMiddleware {
         let statusCode = axiosResponse.status
         if (axiosResponse.headers['content-type'] === 'application/json') {
             let dataJson = JSON.parse(data.toString())
-            const respProcessCode = dataJson?.processCode ?? Number(axiosResponse.headers.processcode)
 
-            if (respProcessCode) {
-                const { $processDataParams = undefined } = dataJson
-                const processData = this.processDataService.getProcessData(respProcessCode, $processDataParams, session, parsedUrl)
+            const processCode = dataJson?.processCode ?? Number(axiosResponse.headers.processcode)
+            const processDataParams = dataJson?.opProcessDataParams || { templateParams: dataJson?.$processDataParams }
+
+            if (processCode) {
+                const processData = this.processDataService.getProcessData(processCode, processDataParams, session, parsedUrl)
 
                 if (processData) {
                     dataJson = statusCode >= HttpStatusCode.BAD_REQUEST ? { ...processData } : { ...dataJson, ...processData }
@@ -196,6 +197,7 @@ export default class ProxyMiddleware {
                     delete axiosResponse.headers.processcode
                     delete dataJson.processCode
                     delete dataJson.$processDataParams
+                    delete dataJson.opProcessDataParams
                 }
 
                 statusCode = HttpStatusCode.OK

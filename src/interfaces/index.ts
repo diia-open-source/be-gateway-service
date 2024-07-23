@@ -6,6 +6,7 @@ import { ErrorCode } from '@diia-inhouse/errors'
 import { ActionSession, ActionVersion, FileType, HttpMethod, PlatformType } from '@diia-inhouse/types'
 
 import { ExternalEvent } from '@interfaces/queue'
+import { ProcessDataParams } from '@interfaces/services/processData'
 
 export enum ProcessCode {
     AttestationNotPassed = 10101007,
@@ -164,7 +165,8 @@ export interface ResponseError {
     data?: {
         action?: string
         processCode?: number
-        $processDataParams?: Record<string, string>
+        $processDataParams?: Record<string, string> // obsolete, use opProcessDataParams
+        opProcessDataParams?: ProcessDataParams
         code?: number
         [key: string]: unknown
     }
@@ -190,7 +192,8 @@ export interface ResponsePayload {
     filename?: string
     content?: string
     processCode?: ProcessCode
-    $processDataParams?: Record<string, string>
+    $processDataParams?: Record<string, string> // obsolete, use opProcessDataParams
+    opProcessDataParams?: ProcessDataParams
     errorCode?: ErrorCode
     error?: ResponseError
 }

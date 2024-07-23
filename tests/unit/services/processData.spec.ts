@@ -16,7 +16,18 @@ import { ActionSession, SessionType } from '@diia-inhouse/types'
 import ProcessDataService from '@src/services/processData'
 
 import { ProcessCode } from '@interfaces/index'
+import { ProcessData, ProcessDataParams } from '@interfaces/services/processData'
 import { AppConfig } from '@interfaces/types/config'
+
+interface TestCase {
+    description: string
+    processCode: number
+    processDataParams?: ProcessDataParams
+    templatesFileContent: ProcessData[]
+    session?: ActionSession
+    endpointPath: string
+    expected: ProcessData | undefined
+}
 
 describe('ProcessDataService', () => {
     describe('method: `onInit`', () => {
@@ -62,179 +73,276 @@ describe('ProcessDataService', () => {
     })
 
     describe('method: `getProcessData`', () => {
-        it.each([
-            [
-                'should successfully get template for regular user',
-                ProcessCode.AttestationNotPassed,
-                undefined,
-                [
+        const testCases: TestCase[] = [
+            {
+                description: 'should successfully get template for regular user',
+                processCode: ProcessCode.AttestationNotPassed,
+                templatesFileContent: [
                     {
                         processCode: ProcessCode.AttestationNotPassed,
                         template: {
                             type: 'middleCenterAlignAlert',
                             isClosable: false,
                             data: {
+                                icon: '☝️',
                                 description: 'description',
                                 title: 'caption',
                             },
                         },
                     },
                 ],
-                <ActionSession>{ sessionType: SessionType.User },
-                '/api/v1/path',
-                {
+                session: <ActionSession>{ sessionType: SessionType.User },
+                endpointPath: '/api/v1/path',
+                expected: {
                     processCode: ProcessCode.AttestationNotPassed,
                     template: {
                         type: 'middleCenterAlignAlert',
                         isClosable: false,
-                        data: { description: 'description', title: 'caption' },
+                        data: {
+                            icon: '☝️',
+                            description: 'description',
+                            title: 'caption',
+                        },
                     },
                 },
-            ],
-            [
-                'should successfully get template with dynamic params for regular user',
-                ProcessCode.AttestationNotPassed,
-                { template: 'replace', title: 'caption' },
-                [
+            },
+            {
+                description: 'should successfully get template with dynamic params for regular user',
+                processCode: ProcessCode.AttestationNotPassed,
+                processDataParams: {
+                    templateParams: { template: 'replace', title: 'caption' },
+                },
+                templatesFileContent: [
                     {
                         processCode: ProcessCode.AttestationNotPassed,
                         template: {
                             type: 'middleCenterAlignAlert',
                             isClosable: false,
                             data: {
+                                icon: '☝️',
                                 description: 'template string {template} {template}',
                                 title: '{title} title',
                             },
                         },
                     },
                 ],
-                <ActionSession>{ sessionType: SessionType.User },
-                '/api/v1/path',
-                {
+                session: <ActionSession>{ sessionType: SessionType.User },
+                endpointPath: '/api/v1/path',
+                expected: {
                     processCode: ProcessCode.AttestationNotPassed,
                     template: {
                         type: 'middleCenterAlignAlert',
                         isClosable: false,
-                        data: { description: 'template string replace replace', title: 'caption title' },
+                        data: {
+                            icon: '☝️',
+                            description: 'template string replace replace',
+                            title: 'caption title',
+                        },
                     },
                 },
-            ],
-            [
-                'should successfully get template for e-resident by session type',
-                ProcessCode.AttestationNotPassed,
-                undefined,
-                [
+            },
+            {
+                description: 'should successfully get template with dynamic resource for regular user',
+                processCode: ProcessCode.AttestationNotPassed,
+                processDataParams: {
+                    resource: '123',
+                },
+                templatesFileContent: [
+                    {
+                        processCode: ProcessCode.AttestationNotPassed,
+                        template: {
+                            type: 'middleCenterAlignAlert',
+                            isClosable: false,
+                            data: {
+                                icon: '☝️',
+                                description: 'description',
+                                title: 'caption',
+                                mainButton: {
+                                    name: 'main',
+                                    action: 'action',
+                                },
+                            },
+                        },
+                    },
+                ],
+                session: <ActionSession>{ sessionType: SessionType.User },
+                endpointPath: '/api/v1/path',
+                expected: {
+                    processCode: ProcessCode.AttestationNotPassed,
+                    template: {
+                        type: 'middleCenterAlignAlert',
+                        isClosable: false,
+                        data: {
+                            icon: '☝️',
+                            description: 'description',
+                            title: 'caption',
+                            mainButton: {
+                                name: 'main',
+                                action: 'action',
+                                resource: '123',
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                description: 'should successfully get template for e-resident by session type',
+                processCode: ProcessCode.AttestationNotPassed,
+                templatesFileContent: [
                     {
                         processCode: Number(`1${ProcessCode.AttestationNotPassed}`),
                         template: {
                             type: 'middleCenterAlignAlert',
                             isClosable: false,
+                            data: {
+                                icon: '☝️',
+                                description: 'description',
+                                title: 'caption',
+                            },
                         },
                     },
                 ],
-                <ActionSession>{ sessionType: SessionType.EResident, user: {} },
-                '/api/v1/path',
-                {
+                session: <ActionSession>{ sessionType: SessionType.EResident, user: {} },
+                endpointPath: '/api/v1/path',
+                expected: {
                     processCode: Number(`1${ProcessCode.AttestationNotPassed}`),
                     template: {
                         type: 'middleCenterAlignAlert',
                         isClosable: false,
+                        data: {
+                            icon: '☝️',
+                            description: 'description',
+                            title: 'caption',
+                        },
                     },
                 },
-            ],
-            [
-                'should successfully get template for e-resident by path',
-                ProcessCode.AttestationNotPassed,
-                undefined,
-                [
+            },
+            {
+                description: 'should successfully get template for e-resident by path',
+                processCode: ProcessCode.AttestationNotPassed,
+                templatesFileContent: [
                     {
                         processCode: Number(`1${ProcessCode.AttestationNotPassed}`),
                         template: {
                             type: 'middleCenterAlignAlert',
                             isClosable: false,
+                            data: {
+                                icon: '☝️',
+                                description: 'description',
+                                title: 'caption',
+                            },
                         },
                     },
                 ],
-                undefined,
-                '/e-resident/api/v1/path',
-                {
+                session: undefined,
+                endpointPath: '/e-resident/api/v1/path',
+                expected: {
                     processCode: Number(`1${ProcessCode.AttestationNotPassed}`),
                     template: {
                         type: 'middleCenterAlignAlert',
                         isClosable: false,
+                        data: {
+                            icon: '☝️',
+                            description: 'description',
+                            title: 'caption',
+                        },
                     },
                 },
-            ],
-            [
-                'should successfully get template for e-resident by session type',
-                ProcessCode.AttestationNotPassed,
-                undefined,
-                [
+            },
+            {
+                description: 'should successfully get template for e-resident by session type',
+                processCode: ProcessCode.AttestationNotPassed,
+                templatesFileContent: [
                     {
                         processCode: Number(`2${ProcessCode.AttestationNotPassed}`),
                         template: {
                             type: 'middleCenterAlignAlert',
                             isClosable: false,
+                            data: {
+                                icon: '☝️',
+                                description: 'description',
+                                title: 'caption',
+                            },
                         },
                     },
                 ],
-                <ActionSession>{ sessionType: SessionType.CabinetUser, user: {} },
-                '/api/v1/path',
-                {
+                session: <ActionSession>{ sessionType: SessionType.CabinetUser, user: {} },
+                endpointPath: '/api/v1/path',
+                expected: {
                     processCode: Number(`2${ProcessCode.AttestationNotPassed}`),
                     template: {
                         type: 'middleCenterAlignAlert',
                         isClosable: false,
+                        data: {
+                            icon: '☝️',
+                            description: 'description',
+                            title: 'caption',
+                        },
                     },
                 },
-            ],
-            [
-                'should successfully get template for cabinet by path',
-                ProcessCode.AttestationNotPassed,
-                undefined,
-                [
+            },
+            {
+                description: 'should successfully get template for cabinet by path',
+                processCode: ProcessCode.AttestationNotPassed,
+                templatesFileContent: [
                     {
                         processCode: Number(`2${ProcessCode.AttestationNotPassed}`),
                         template: {
                             type: 'middleCenterAlignAlert',
                             isClosable: false,
+                            data: {
+                                icon: '☝️',
+                                description: 'description',
+                                title: 'caption',
+                            },
                         },
                     },
                 ],
-                undefined,
-                '/cabinet/api/v1/path',
-                {
+                session: undefined,
+                endpointPath: '/cabinet/api/v1/path',
+                expected: {
                     processCode: Number(`2${ProcessCode.AttestationNotPassed}`),
                     template: {
                         type: 'middleCenterAlignAlert',
                         isClosable: false,
+                        data: {
+                            icon: '☝️',
+                            description: 'description',
+                            title: 'caption',
+                        },
                     },
                 },
-            ],
-            [
-                'should return undefined if no template data was found for given process code',
-                <ProcessCode>0,
-                undefined,
-                [],
-                undefined,
-                '/api/v1/path',
-                undefined,
-            ],
-        ])('%s', async (_msg, processCode, $processDataParams, templatesFileContent, session, endpointPath, expectedTemplate) => {
-            listModulesMock.mockReturnValue([{ path: './processCodesTemplates/auth.json' }])
-            fsMock.promises.readFile.mockResolvedValue(JSON.stringify(templatesFileContent))
+            },
+            {
+                description: 'should return undefined if no template data was found for given process code',
+                processCode: 0,
+                templatesFileContent: [],
+                session: undefined,
+                endpointPath: '/api/v1/path',
+                expected: undefined,
+            },
+        ]
 
-            const processDataService = new ProcessDataService(<AppConfig>{
-                processCodesTemplates: {
-                    folderPath: './processCodesTemplates',
-                    cabinetFolderPath: './cabinetProcessCodesTemplates',
-                    eResidentFolderPath: './eResidentProcessCodesTemplates',
-                },
-            })
+        it.each(testCases)(
+            '$description',
+            async ({ processCode, processDataParams, templatesFileContent, session, endpointPath, expected }) => {
+                listModulesMock.mockReturnValue([{ path: './processCodesTemplates/auth.json' }])
+                fsMock.promises.readFile.mockResolvedValue(JSON.stringify(templatesFileContent))
 
-            await processDataService.onInit()
+                const processDataService = new ProcessDataService(<AppConfig>{
+                    processCodesTemplates: {
+                        folderPath: './processCodesTemplates',
+                        cabinetFolderPath: './cabinetProcessCodesTemplates',
+                        eResidentFolderPath: './eResidentProcessCodesTemplates',
+                    },
+                })
 
-            expect(processDataService.getProcessData(processCode, $processDataParams, session, endpointPath)).toEqual(expectedTemplate)
-        })
+                await processDataService.onInit()
+
+                const result = processDataService.getProcessData(processCode, processDataParams, session, endpointPath)
+
+                expect(result).toEqual(expected)
+            },
+        )
     })
 })

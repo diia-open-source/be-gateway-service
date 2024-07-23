@@ -1,8 +1,9 @@
-import { HttpMethod } from '@diia-inhouse/types'
+import { ActionVersion, HttpMethod, SessionType } from '@diia-inhouse/types'
 
 import { DEFAULT_USER_AUTH, DEFAULT_USER_HEADERS } from '@src/routes/defaults'
 
 import { AppRoute } from '@interfaces/routes/appRoute'
+import { PartnerMaintenanceScope, PartnerScopeType } from '@interfaces/routes/partner'
 
 const serviceId = 'medical'
 
@@ -10,11 +11,29 @@ const routes: AppRoute[] = [
     // declarations
     {
         method: HttpMethod.POST,
-        path: '/api/:apiVersion/public-service/medical/declarations/onboarding',
+        path: '/api/:apiVersion/public-service/medical/declarations/archived/home',
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
         metadata: { tags: ['Declarations'] },
+    },
+    {
+        method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/declarations/archived/:declarationId',
+        proxyTo: { serviceId },
+        auth: DEFAULT_USER_AUTH,
+        headers: DEFAULT_USER_HEADERS,
+        metadata: { tags: ['Declarations'] },
+    },
+
+    // declaration applications
+    {
+        method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/declarations/onboarding',
+        proxyTo: { serviceId },
+        auth: DEFAULT_USER_AUTH,
+        headers: DEFAULT_USER_HEADERS,
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.GET,
@@ -22,7 +41,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.POST,
@@ -30,7 +49,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.POST,
@@ -38,7 +57,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.PATCH,
@@ -46,7 +65,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.GET,
@@ -54,7 +73,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.POST,
@@ -62,7 +81,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.POST,
@@ -70,7 +89,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.GET,
@@ -78,7 +97,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.GET,
@@ -86,7 +105,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.GET,
@@ -94,7 +113,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.GET,
@@ -102,7 +121,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.POST,
@@ -110,7 +129,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.POST,
@@ -118,7 +137,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.POST,
@@ -126,7 +145,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
     {
         method: HttpMethod.POST,
@@ -134,7 +153,7 @@ const routes: AppRoute[] = [
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
-        metadata: { tags: ['Declarations'] },
+        metadata: { tags: ['Declaration applications'] },
     },
 
     // person registration
@@ -198,6 +217,14 @@ const routes: AppRoute[] = [
     // person data
     {
         method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/auth',
+        proxyTo: { serviceId },
+        auth: DEFAULT_USER_AUTH,
+        headers: DEFAULT_USER_HEADERS,
+        metadata: { tags: ['Persons data'] },
+    },
+    {
+        method: HttpMethod.POST,
         path: '/api/:apiVersion/public-service/medical/persons/data/home',
         proxyTo: { serviceId },
         auth: DEFAULT_USER_AUTH,
@@ -219,6 +246,79 @@ const routes: AppRoute[] = [
         auth: DEFAULT_USER_AUTH,
         headers: DEFAULT_USER_HEADERS,
         metadata: { tags: ['Persons data'] },
+    },
+    {
+        method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/persons/data/residence',
+        proxyTo: { serviceId },
+        auth: DEFAULT_USER_AUTH,
+        headers: DEFAULT_USER_HEADERS,
+        metadata: { tags: ['Persons data'] },
+    },
+    {
+        method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/persons/data/contacts',
+        proxyTo: { serviceId },
+        auth: DEFAULT_USER_AUTH,
+        headers: DEFAULT_USER_HEADERS,
+        metadata: { tags: ['Persons data'] },
+    },
+    {
+        method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/persons/data/emergency-contact',
+        proxyTo: { serviceId },
+        auth: DEFAULT_USER_AUTH,
+        headers: DEFAULT_USER_HEADERS,
+        metadata: { tags: ['Persons data'] },
+    },
+    {
+        method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/persons/data/secret',
+        proxyTo: { serviceId },
+        auth: DEFAULT_USER_AUTH,
+        headers: DEFAULT_USER_HEADERS,
+        metadata: { tags: ['Persons data'] },
+    },
+    {
+        method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/persons/data/request-change',
+        proxyTo: { serviceId },
+        auth: DEFAULT_USER_AUTH,
+        headers: DEFAULT_USER_HEADERS,
+        metadata: { tags: ['Persons data'] },
+    },
+    {
+        method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/persons/data/confirm',
+        proxyTo: { serviceId },
+        auth: DEFAULT_USER_AUTH,
+        headers: DEFAULT_USER_HEADERS,
+        metadata: { tags: ['Persons data'] },
+    },
+    {
+        method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/persons/data/signing',
+        proxyTo: { serviceId },
+        auth: DEFAULT_USER_AUTH,
+        headers: DEFAULT_USER_HEADERS,
+        metadata: { tags: ['Persons data'] },
+    },
+
+    // service
+    {
+        method: HttpMethod.POST,
+        path: '/api/:apiVersion/public-service/medical/dictionary/update',
+        proxyTo: { serviceId },
+        auth: [
+            {
+                sessionType: SessionType.Partner,
+                version: ActionVersion.V1,
+                scopes: {
+                    [PartnerScopeType.maintenance]: [PartnerMaintenanceScope.Admin],
+                },
+            },
+        ],
+        metadata: { tags: ['Service'] },
     },
 ]
 
